@@ -1,0 +1,258 @@
+openapi: 3.0.3
+info:
+  title: Your API Title
+  version: 1.0.0
+  description: Detailed API documentation for your project.
+paths:
+  /api/faculties/{id}/:
+    get:
+      operationId: faculties_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - faculties
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Faculties'
+          description: ''
+  /api/submission-test/:
+    post:
+      operationId: submission_test_create
+      tags:
+      - submission-test
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TestSubmission'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TestSubmission'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TestSubmission'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TestSubmission'
+          description: ''
+  /api/test/{id}/:
+    get:
+      operationId: test_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - test
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TestDetail'
+          description: ''
+  /api/tests/{faculty_id}/:
+    get:
+      operationId: tests_retrieve
+      parameters:
+      - in: path
+        name: faculty_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - tests
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/university/:
+    get:
+      operationId: university_list
+      tags:
+      - university
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/University'
+          description: ''
+components:
+  schemas:
+    AnswerBase:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        answer:
+          type: string
+        answer_picture:
+          type: string
+          format: uri
+          nullable: true
+        is_true:
+          type: boolean
+      required:
+      - answer
+      - id
+    AnswerSubmission:
+      type: object
+      properties:
+        question_id:
+          type: integer
+        chosen_answer_id:
+          type: integer
+      required:
+      - chosen_answer_id
+      - question_id
+    Faculties:
+      type: object
+      properties:
+        university_name:
+          type: string
+          maxLength: 200
+        university_short_name:
+          type: string
+          maxLength: 200
+        university_picture:
+          type: string
+          format: uri
+        faculties:
+          type: string
+          readOnly: true
+      required:
+      - faculties
+      - university_name
+      - university_picture
+      - university_short_name
+    Question:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        question:
+          type: string
+        question_img:
+          type: string
+          format: uri
+          nullable: true
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/AnswerBase'
+          readOnly: true
+      required:
+      - answers
+      - id
+      - question
+    Subject:
+      type: object
+      properties:
+        subject_name:
+          type: string
+          maxLength: 200
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Question'
+          readOnly: true
+      required:
+      - questions
+      - subject_name
+    TestDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        test_name:
+          type: string
+          maxLength: 200
+        time:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          description: Time in minutes
+        subjects:
+          type: array
+          items:
+            $ref: '#/components/schemas/Subject'
+          readOnly: true
+      required:
+      - id
+      - subjects
+      - test_name
+    TestSubmission:
+      type: object
+      properties:
+        test_id:
+          type: integer
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/AnswerSubmission'
+      required:
+      - answers
+      - test_id
+    University:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        university_name:
+          type: string
+          maxLength: 200
+        university_short_name:
+          type: string
+          maxLength: 200
+        university_picture:
+          type: string
+          format: uri
+      required:
+      - id
+      - university_name
+      - university_picture
+      - university_short_name
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
