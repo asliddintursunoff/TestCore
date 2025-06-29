@@ -94,8 +94,8 @@ Please reach out or open a pull request.
 ## 📧 Contact
 
 - Website: [Testcore.uz](https://testcore.uz)
-- Telegram: [@yourhandle](https://t.me/yourhandle)  
-- Email: your@email.com
+- Telegram: [@yourhandle](https://t.me/asliddin_tursunoff)  
+- Email: asliddintursunoff2@icloud.com
 
 ---
 
