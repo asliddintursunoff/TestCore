@@ -35,6 +35,7 @@ pydantic_core==2.33.2
 PyJWT==2.9.0
 PyMuPDF==1.26.3
 pytesseract==0.3.13
+python-dotenv==1.1.1
 python-monkey-business==1.1.0
 python-telegram-bot==22.2
 pytz==2025.2
