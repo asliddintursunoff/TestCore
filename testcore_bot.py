@@ -10,9 +10,8 @@ import os
 otp_store = {}  
 OTP_VALIDITY_SECONDS = 120
 
-
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-BACKEND_URL = 'https://apiv1/testcore.uz/api/telegram-login/'
+BACKEND_URL = 'https://apiv1.testcore.uz/api/telegram-login/'
 
 
 async def set_commands(chat_id: int, stage: str, context: ContextTypes.DEFAULT_TYPE):
