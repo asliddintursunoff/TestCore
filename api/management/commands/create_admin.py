@@ -10,9 +10,9 @@ class Command(BaseCommand):
         username = os.getenv("DJANGO_ADMIN_USER")
         email = os.getenv("DJANGO_ADMIN_EMAIL")
         password = os.getenv("DJANGO_ADMIN_PASS")
-
+        phone_number = os.getenv("DJANGO_ADMIN_PHONE")
         if not User.objects.filter(username=username).exists():
-            User.objects.create_superuser(username=username, email=email, password=password)
+            User.objects.create_superuser(username=username, email=email, password=password,phone_number=phone_number )
             self.stdout.write(self.style.SUCCESS(f"Superuser '{username}' created."))
         else:
             self.stdout.write(self.style.WARNING(f"Superuser '{username}' already exists."))
