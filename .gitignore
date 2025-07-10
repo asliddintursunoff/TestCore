@@ -1,0 +1,66 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+*.pyo
+*.pyd
+
+# Django specific
+*.sqlite3
+*.log
+db.sqlite3
+local_settings.py
+
+# Environment
+.env
+.env.*
+
+# Virtualenv
+env/
+venv/
+ENV/
+.venv/
+
+# Static and media
+staticfiles/
+media/
+*.bak
+
+# Migrations (optional if you want fresh DB every time)
+**/migrations/*.pyc
+**/migrations/__pycache__/
+**/migrations/*.py~
+**/migrations/*.bak
+# Uncomment this line to ignore all migration files
+# **/migrations/*.py
+
+# Node / npm (if used for frontend or Railway CLI)
+node_modules/
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# VS Code
+.vscode/
+
+# Mac & system files
+.DS_Store
+Thumbs.db
+
+# Coverage/testing
+htmlcov/
+.coverage
+.tox/
+.pytest_cache/
+nosetests.xml
+coverage.xml
+
+# Git conflict backups
+*.orig
+*.rej
+
+# Railway build/output artifacts
+dist/
+build/
