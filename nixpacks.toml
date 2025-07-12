@@ -1,5 +1,5 @@
 [phases.setup]
-nixPkgs = ["python311", "texlive.combined.scheme-basic"]
+nixPkgs = ["python311", "texlive.combined.scheme-medium"]
 
 [phases.build]
 cmds = ["pip install -r requirements.txt"]
