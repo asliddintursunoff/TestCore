@@ -18,7 +18,13 @@ CSRF_TRUSTED_ORIGINS = [
     "https://apiv1.testcore.uz",
     "https://web-production-da966.up.railway.app",
     "https://testcore.uz",
-    "https://localhost:3000",  # for local frontend (optional)
+    "https://localhost:3000", 
+    "http://localhost:5173"
+     # for local frontend (optional)
+]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
 ]
 
 # Application definition
@@ -38,6 +44,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     "whitenoise.middleware.WhiteNoiseMiddleware",  # must be FIRST or very early
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
