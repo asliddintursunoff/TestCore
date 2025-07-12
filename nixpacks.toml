@@ -1,8 +1,20 @@
+
+
 [phases.setup]
-nixPkgs = ["python311", "texlive.combined.scheme-medium"]
+nixPkgs = ["python311"]
+
+[phases.install]
+nixPkgs = ["texlive.combine {
+  inherit (texlive) scheme-medium
+    enumitem
+    tikz
+    fancyhdr
+    graphics
+    multicol;
+}"]
 
 [phases.build]
 cmds = ["pip install -r requirements.txt"]
 
 [start]
-cmd = "gunicorn YOUR_PROJECT_NAME.wsgi:application --bind 0.0.0.0:$PORT"
+cmd = "gunicorn project.wsgi:application --bind 0.0.0.0:$PORT"
