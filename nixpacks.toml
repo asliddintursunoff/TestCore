@@ -3,10 +3,9 @@ nixPkgs = [
   "python311",
   "texlive.scheme-medium",
   "texlive.enumitem",
-  "texlive.tikz",
   "texlive.fancyhdr",
-  "texlive.multicol",
-  "texlive.graphics"
+  "texlive.graphics",
+  "texlive.tikz"
 ]
 
 [phases.build]
