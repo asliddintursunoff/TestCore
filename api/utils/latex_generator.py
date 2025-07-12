@@ -4,8 +4,13 @@ import os
 import subprocess
 import tempfile
 from django.http import FileResponse
+import logging
+from django.http import HttpResponse, JsonResponse
 
-
+logger = logging.getLogger(__name__)
+import logging
+logger = logging.getLogger(__name__)
+ 
 def generate_latex(json_data):
     header = r"""
 \documentclass[12pt]{article}
@@ -32,6 +37,7 @@ def generate_latex(json_data):
 
     \vspace{0.3cm}
     \includegraphics[width=3cm]{logo.png}
+
 \end{center}
 \vspace{0.5cm}
 \begin{multicols}{2}
@@ -77,7 +83,8 @@ def generate_pdf_response_from_json(json_data):
         # Copy logo.png (you can adjust the path to your static location)
         from django.conf import settings
         import shutil
-        shutil.copy(os.path.join(settings.BASE_DIR, "static/logo.PNG"), logo_path)
+        shutil.copy(os.path.join(settings.BASE_DIR, "static/logo.png"), logo_path)
+
 
         # Compile to PDF
         try:
@@ -90,9 +97,9 @@ def generate_pdf_response_from_json(json_data):
             )
 
             if not os.path.exists(pdf_path):
-                # Optional: print output to diagnose why it failed
-                print("❌ PDFLaTeX Error Output:\n", result.stdout.decode())
+                logger.error("❌ PDFLaTeX Error:\n%s", result.stdout.decode())
                 raise Exception("PDF compilation failed")
+
 
 
         except subprocess.CalledProcessError:
