@@ -6,11 +6,11 @@ import tempfile
 from django.http import FileResponse
 import logging
 from django.http import HttpResponse, JsonResponse
-
-logger = logging.getLogger(__name__)
+import tempfile, subprocess, os, shutil
+from django.conf import settings
 import logging
 logger = logging.getLogger(__name__)
- 
+
 def generate_latex(json_data):
     header = r"""
 \documentclass[12pt]{article}
@@ -69,26 +69,33 @@ def generate_latex(json_data):
     return header + body + footer
 
 
-
 def generate_pdf_response_from_json(json_data):
-    with tempfile.TemporaryDirectory() as temp_dir:
-        tex_path = os.path.join(temp_dir, "document.tex")
-        pdf_path = os.path.join(temp_dir, "document.pdf")
-        logo_path = os.path.join(temp_dir, "logo.png")
+    
 
-        # Write LaTeX file
-        with open(tex_path, "w", encoding="utf-8") as f:
-            f.write(generate_latex(json_data))
+    try:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            tex_path = os.path.join(temp_dir, "document.tex")
+            pdf_path = os.path.join(temp_dir, "document.pdf")
+            logo_path = os.path.join(temp_dir, "logo.png")
 
-        # Copy logo.png (you can adjust the path to your static location)
-        from django.conf import settings
-        import shutil
-        shutil.copy(os.path.join(settings.BASE_DIR, "static/logo.png"), logo_path)
+            # Write .tex file
+            with open(tex_path, "w", encoding="utf-8") as f:
+                f.write(generate_latex(json_data))
 
+            # Copy logo file safely
+            logo_source = os.path.join(settings.BASE_DIR, "static/logo.png")
+            if not os.path.exists(logo_source):
+                logger.error("❌ logo.png not found at: %s", logo_source)
+                return JsonResponse({"error": "logo.png not found"}, status=500)
 
-        # Compile to PDF
-        try:
-            # Compile LaTeX (don't fail on warnings)
+            shutil.copy(logo_source, logo_path)
+
+            # Check if pdflatex is available
+            if shutil.which("pdflatex") is None:
+                logger.error("❌ pdflatex not found in environment")
+                return JsonResponse({"error": "PDF generator not installed"}, status=500)
+
+            # Run pdflatex
             result = subprocess.run(
                 ["pdflatex", "-interaction=nonstopmode", "document.tex"],
                 cwd=temp_dir,
@@ -97,13 +104,50 @@ def generate_pdf_response_from_json(json_data):
             )
 
             if not os.path.exists(pdf_path):
-                logger.error("❌ PDFLaTeX Error:\n%s", result.stdout.decode())
-                raise Exception("PDF compilation failed")
+                logger.error("❌ pdflatex output:\n%s", result.stdout.decode())
+                return JsonResponse({"error": "PDF compilation failed"}, status=500)
+
+            return FileResponse(open(pdf_path, "rb"), as_attachment=True, filename="generated_exam.pdf")
+
+    except Exception as e:
+        logger.exception("Unhandled PDF error")
+        return JsonResponse({"error": str(e)}, status=500)
+
+
+# def generate_pdf_response_from_json(json_data):
+#     with tempfile.TemporaryDirectory() as temp_dir:
+#         tex_path = os.path.join(temp_dir, "document.tex")
+#         pdf_path = os.path.join(temp_dir, "document.pdf")
+#         logo_path = os.path.join(temp_dir, "logo.png")
+
+#         # Write LaTeX file
+#         with open(tex_path, "w", encoding="utf-8") as f:
+#             f.write(generate_latex(json_data))
+
+#         # Copy logo.png (you can adjust the path to your static location)
+#         from django.conf import settings
+#         import shutil
+#         shutil.copy(os.path.join(settings.BASE_DIR, "static/logo.png"), logo_path)
+
+
+#         # Compile to PDF
+#         try:
+#             # Compile LaTeX (don't fail on warnings)
+#             result = subprocess.run(
+#                 ["pdflatex", "-interaction=nonstopmode", "document.tex"],
+#                 cwd=temp_dir,
+#                 stdout=subprocess.PIPE,
+#                 stderr=subprocess.PIPE,
+#             )
+
+#             if not os.path.exists(pdf_path):
+#                 logger.error("❌ PDFLaTeX Error:\n%s", result.stdout.decode())
+#                 raise Exception("PDF compilation failed")
 
 
 
-        except subprocess.CalledProcessError:
-            raise Exception("PDF compilation failed")
+#         except subprocess.CalledProcessError:
+#             raise Exception("PDF compilation failed")
 
-        # Return the compiled PDF as response
-        return FileResponse(open(pdf_path, "rb"), as_attachment=True, filename="generated_exam.pdf")
+#         # Return the compiled PDF as response
+#         return FileResponse(open(pdf_path, "rb"), as_attachment=True, filename="generated_exam.pdf")
