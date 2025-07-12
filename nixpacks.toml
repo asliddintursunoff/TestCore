@@ -1,8 +1,8 @@
 [phases.setup]
-nixPkgs = ["python311", "pip", "texlive.combined.scheme-basic"]
+nixPkgs = ["python311", "texlive.combined.scheme-basic"]
 
 [phases.build]
 cmds = ["pip install -r requirements.txt"]
 
 [start]
-cmd = "gunicorn project.wsgi:application --bind 0.0.0.0:$PORT"
+cmd = "gunicorn YOUR_PROJECT_NAME.wsgi:application --bind 0.0.0.0:$PORT"
