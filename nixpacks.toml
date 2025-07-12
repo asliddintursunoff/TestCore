@@ -1,17 +1,5 @@
-[phases.setup]
-nixPkgs = ["python311"]
-
-[phases.install]
-nixPkgs = [
-  '''texlive.combine {
-    inherit (texlive) scheme-medium
-      enumitem
-      tikz
-      fancyhdr
-      graphics
-      multicol;
-  }'''
-]
+[nix]
+pkgsFile = "nix/nixpkgs.nix"
 
 [phases.build]
 cmds = ["pip install -r requirements.txt"]
