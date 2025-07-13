@@ -7,4 +7,4 @@ from .test_typesDB import *
 from .dtm_test_result import *
 from .tariffDB import *
 from .ClassicTestDB import *
-from .ClassticTestResultDB import *
+from .ClasssicTestResultDB import *

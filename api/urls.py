@@ -8,7 +8,8 @@ from api.views import (dtm_test_result_views,
                        all_test_type_views,
                        ai_question_making_views,
                        json_to_pdf_views,
-                       classic_tests_views)
+                       classic_tests_views,
+                       classic_test_result_views)
 from api.views.authentication_views import TelegramOTPStoreAPIView, OTPVerifyJWTAPIView,CustomTokenRefreshView
 from rest_framework_simplejwt.views import TokenRefreshView
 
@@ -28,6 +29,11 @@ urlpatterns = [
     #getting classic test pdf
     path("getting-test-pdf/<int:classic_test_id>/",json_to_pdf_views.GetClassicTestPDFbyID.as_view()),
     #
+    #getting submitted classic test 
+    path("classic-test/submit",classic_test_result_views.ClassicTestSubmissionAPIView.as_view()),
+    #
+
+
     #all test type
     path("tests-groups/",all_test_type_views.AllTestTypeListAPIView.as_view()),
 

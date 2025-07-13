@@ -1,5 +1,5 @@
 from django.db import models
-from ClassicTestDB import *
+from .ClassicTestDB import User,ClassicTestDB,ClassicAnswerDB,ClassicQuestionDB
 
 class ClassicTestSubmission(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
