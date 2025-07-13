@@ -33,7 +33,7 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiRespon
     }
 )
 class GetClassicTestPDFbyID(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
     def get(self, request, classic_test_id):
         test_instance = get_object_or_404(ClassicTestDB, id=classic_test_id)
         serializer = ClassicTestDBSerializer(test_instance)

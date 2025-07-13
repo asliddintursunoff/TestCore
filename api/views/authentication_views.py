@@ -30,7 +30,9 @@ class TelegramOTPStoreAPIView(APIView):
             return Response(serializer.errors, status=400)
 
         data = serializer.validated_data
-        phone = data["phone_number"]
+        raw_phone = data["phone_number"]
+        phone = raw_phone.lstrip('+')  # normalize by removing '+'
+
         telegram_id = data["telegram_id"]
         code = data["code"]
 

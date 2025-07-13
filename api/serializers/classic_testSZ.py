@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from api.models.ClassicTestDB import ClassicTestDB, ClassicSubject, ClassicQuestionDB, ClassicAnswerDB
-
+from rest_framework.reverse import reverse
 class ClassicAnswerDBSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClassicAnswerDB
@@ -103,3 +103,21 @@ class ClassicTestDBSerializer(serializers.ModelSerializer):
                 for answer_data in answers_data:
                     ClassicAnswerDB.objects.create(question=question, **answer_data)
         return instance
+
+
+
+class ClassicBaseTestSerializer(serializers.ModelSerializer):
+    # test_detail_api_endpoint = serializers.SerializerMethodField(help_text="API link to get detail of this test")
+    
+    
+
+    # def test_detail_api_endpoint(self, obj):
+    #     request = self.context.get('request', None)
+    #     return {
+    #         "method": "GET",
+    #         "endpoint": reverse("getting_result", kwargs={"question_id": obj["id"],"test_type_id":2}, request=request),
+          
+    #     }
+    class Meta:
+        model = ClassicTestDB
+        fields = ["id","created_by","test_name","time"]

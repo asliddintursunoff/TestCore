@@ -4,7 +4,24 @@ import time
 from itertools import cycle
 import asyncio
 import threading
-KEYS = ["AIzaSyDa7nRW0zK7L4XP8z31RHTFTmPIUEwk20g",
+
+KEYS = [
+        "AIzaSyBGfTq-2OHWA3sQA0wHWWieR2r2OyD6Oys",
+        "AIzaSyApErPsP9ufNBsr89SIZ0Jn8PwZUc4L2nk",
+        "AIzaSyBDTAlV7M3DWAGspE8JH5eIIdK5MoSOKSs",
+        "AIzaSyCNP2YqXsBqcQhjvfi1E77PmN0IAvccKbo",
+        "AIzaSyAprkeablJITkSh-YZlksXI5CVFbfxfykc",
+        "AIzaSyAMvbbfID1Jx5FKEPT6ZP7tlQ7ImgKY0wU",
+        "AIzaSyANu1Qh3RhCPoqVr0hqsSnuevj2Z4zjZA0",
+        "AIzaSyCChGwQUI8x3g6pej374BukaOjp-RjT4Sk",
+        "AIzaSyC9vdOmvviEAKYTXKIXCpKKP6ibV86TOpI",
+        "AIzaSyDuRcMZboJHedVdD-QiZJnGQBXX_PUF1Xg",
+        "AIzaSyCfhydXRC161pDBCLOnNWBU-dRJUInvJOU",
+        "AIzaSyDLgvukv1Qqvn0l4gAlSS4oM4_pZzWJ21I",
+        "AIzaSyC0c3_-PqzvYCeZ3Nlzp4PMu8ez8kB8XTQ",
+        "AIzaSyCusW5X68HR17Qy0uHAYEwHClgSL9TLdbY",
+        #
+        "AIzaSyDa7nRW0zK7L4XP8z31RHTFTmPIUEwk20g",
         "AIzaSyCaXqoBATI5HDLUyh3S0fGBTC-ibzk7TGs",
         "AIzaSyDR5Y29TWHDNMeohzJDGWGV0iVs4u4QSuY",
         "AIzaSyDJV-cwZ1CPHbpaigUt5ozHSZKmWgHt_Is",
