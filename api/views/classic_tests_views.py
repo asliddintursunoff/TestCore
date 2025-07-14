@@ -3,8 +3,11 @@ from api.models.ClassicTestDB import ClassicTestDB
 from rest_framework import generics
 from rest_framework import permissions
 from api.serializers.classic_testSZ import ClassicBaseTestSerializer
+from drf_spectacular.utils import extend_schema
 
 
+@extend_schema(
+    tags=["Classic Tests"],)
 class ClassicTestListAPIView(generics.ListAPIView):
     serializer_class = ClassicBaseTestSerializer
     permission_classes = [permissions.IsAuthenticated]

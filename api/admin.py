@@ -10,6 +10,9 @@ from api.models.tariffDB import *
 from api.models.ClassicTestDB import *
 from api.models.userDB import User
 import nested_admin
+from api.models.ClasssicTestResultDB import *
+
+
 
 # registering tariffs
 admin.site.register(Tariff)
@@ -109,3 +112,5 @@ admin.site.register(AnswerSubmission)
 
 admin.site.register(User)
 # admin.site.register(TestTypeDB)
+
+admin.site.register(ClassicTestSubmission)

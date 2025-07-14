@@ -1,6 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework import permissions
-from api.models.ClasssicTestResultDB import ClassicTestSubmission
+from api.models.ClasssicTestResultDB import ClassicTestSubmission,ClassicAnswerSubmission
 from api.serializers.international_test_resulltSZ import AnswerSubmission,TestSubmissionSerializer
 from django.shortcuts import get_object_or_404
 from api.models.ClassicTestDB import ClassicTestDB,ClassicQuestionDB,ClassicAnswerDB
@@ -59,7 +59,7 @@ class ClassicTestSubmissionAPIView(APIView):
                     raise NotFound(detail="Not found Question with this ID")
                 
                 if answer_id is None:
-                    AnswerSubmission.objects.create(question_id = question_id,
+                    ClassicAnswerSubmission.objects.create(question_id = question_id,
                                                 chosen_answer_id = None,
                                                 submission = submission,
                                                 is_correct_answer = False)
@@ -77,7 +77,7 @@ class ClassicTestSubmissionAPIView(APIView):
                     total_correct+=1
                     is_correct_answer = True
 
-                AnswerSubmission.objects.create(question_id = question_id,
+                ClassicAnswerSubmission.objects.create(question_id = question_id,
                                                 chosen_answer_id = answer_id,
                                                 submission = submission,
                                                 is_correct_answer = is_correct_answer)

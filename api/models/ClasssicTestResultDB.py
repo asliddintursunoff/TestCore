@@ -6,13 +6,14 @@ class ClassicTestSubmission(models.Model):
     test = models.ForeignKey(ClassicTestDB, on_delete=models.CASCADE)
     submitted_at = models.DateTimeField(auto_now_add=True)
     total_correct = models.IntegerField(default=0)
+    total_score = models.FloatField(default=0)
     
     time_taken = models.IntegerField(default=0)
 
     class Meta:
         #unique_together = ('user', 'test')
-        verbose_name = "Test Submission"
-        verbose_name_plural = "Test Submissions"
+        verbose_name = "Classic Test Submission"
+        verbose_name_plural = "Classic Test Submissions"
 
     def __str__(self):
         return f"{self.user} - {self.test.test_name}"
