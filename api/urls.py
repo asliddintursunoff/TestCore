@@ -34,6 +34,10 @@ urlpatterns = [
     #main leader bord
     path("main-leaderbord/",user_rating_views.LeaderboardView.as_view()),
     #
+
+    #main leader bord
+    path("main-classic-leaderbord/<int:classic_test_id>",user_rating_views.LeaderBoardForClassTestView.as_view()),
+    #
     #getting classic test pdf
     path("getting-test-pdf/<int:classic_test_id>/",json_to_pdf_views.GetClassicTestPDFbyID.as_view()),
     #

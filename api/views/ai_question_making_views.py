@@ -89,7 +89,7 @@ class TakingQuestionFromFileAPIView(APIView):
 
             if serializer.is_valid():
                 test_obj = serializer.save()
-                return Response({"id": test_obj.id,"test":serializer.data}, status=status.HTTP_201_CREATED)
+                return Response({"id": test_obj.id,"success":True}, status=status.HTTP_201_CREATED)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -137,9 +137,9 @@ class CreatingNewQuestionFromFileAPIView(APIView):
             serializer = ClassicTestDBSerializer(data=final_json)
 
             if serializer.is_valid():
-                serializer.save()  
+                test_obj = serializer.save()  
 
-                return Response(serializer.data, status=201)
+                return Response({"id": test_obj.id,"success":True}, status=201)
             else:
                 return Response(serializer.errors, status=400)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

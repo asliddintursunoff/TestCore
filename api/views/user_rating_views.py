@@ -1,13 +1,15 @@
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated,AllowAny
 from rest_framework.views import APIView
 from api.serializers.user_rating_serializer import LeaderboardUserSerializer
 from api.models.userDB import User
-
-
+from api.models.ClassicTestDB import ClassicTestDB
+from api.models.ClasssicTestResultDB import ClassicTestSubmission,User
+from django.shortcuts import get_object_or_404
+from drf_spectacular.utils import extend_schema
 class LeaderboardView(APIView):
     permission_classes = [IsAuthenticated]
-
+    @extend_schema(tags=  ["Leader Board"])
     def get(self, request):
         users = User.objects.order_by('-XP_earned')
         serialized_users = LeaderboardUserSerializer(users, many=True).data
@@ -43,3 +45,12 @@ class LeaderboardView(APIView):
             "others": others,
             "self": self_info
         })
+
+
+class LeaderBoardForClassTestView(APIView):
+    permission_classes = [AllowAny]
+    def get(self,request,classic_test_id):
+        classic_test = get_object_or_404(ClassicTestDB,id = classic_test_id)
+        submissions = ClassicTestSubmission.objects.filter(test=classic_test)
+        users = User.objects.filter(id__in=submissions.values_list('user_id', flat=True))
+        return Response({"code":f"{users}"})
