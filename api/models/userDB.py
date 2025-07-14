@@ -10,6 +10,7 @@ class User(AbstractUser):
     telegram_name = models.CharField(max_length=100,null=True,blank=True)
     telegram_id = models.CharField(max_length=50,unique=True,null=True,blank=True)
     tariff_expiry = models.DateTimeField(null=True, blank=True)
+    XP_earned =models.IntegerField(default=0)
     def has_active_tariff(self):
         return self.active_tariff and self.tariff_expiry and timezone.now() < self.tariff_expiry
 
