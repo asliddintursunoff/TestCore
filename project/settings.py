@@ -25,8 +25,11 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
+    "https://testcore.uz",
+    "https://www.testcore.uz",
     "http://localhost:5173",
     "https://testcoreuz.vercel.app/",
+
 ]
 
 # Application definition
