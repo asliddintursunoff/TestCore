@@ -48,6 +48,9 @@ async def contact(update: Update, context: ContextTypes.DEFAULT_TYPE):
     phone = update.message.contact.phone_number
     telegram_id = update.message.from_user.id
     user_map[telegram_id] = phone
+    first_name = update.message.from_user.first_name
+    last_name = update.message.from_user.last_name or ""
+
 
     # Generate OTP
     code = str(random.randint(10000, 99999))
@@ -58,6 +61,7 @@ async def contact(update: Update, context: ContextTypes.DEFAULT_TYPE):
         requests.post(BACKEND_URL, json={
             "telegram_id": telegram_id,
             "phone_number": phone,
+            "telegram_name":f"{first_name} {last_name}",
             "code": code
         })
         await update.message.reply_text(f"🔑 Sizning kirish kodingiz: \n```{code}```" ,parse_mode="Markdown")
@@ -73,6 +77,9 @@ async def contact(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def login(update: Update, context: ContextTypes.DEFAULT_TYPE):
     telegram_id = update.message.from_user.id
+    first_name = update.message.from_user.first_name
+    last_name = update.message.from_user.last_name or ""
+
     phone = user_map.get(telegram_id)
 
     if not phone:
@@ -98,6 +105,7 @@ async def login(update: Update, context: ContextTypes.DEFAULT_TYPE):
         requests.post(BACKEND_URL, json={
             "telegram_id": telegram_id,
             "phone_number": phone,
+            "telegram_name":f"{first_name} {last_name}",
             "code": new_code
         })
         await update.message.reply_text(f"🔁 Yangi kod: \n```{new_code}```",parse_mode="Markdown")

@@ -7,6 +7,7 @@ class User(AbstractUser):
         Tariff, on_delete=models.SET_NULL, null=True, blank=True
     )
     phone_number = models.CharField(max_length=20,unique=True)
+    telegram_name = models.CharField(max_length=100,null=True,blank=True)
     telegram_id = models.CharField(max_length=50,unique=True,null=True,blank=True)
     tariff_expiry = models.DateTimeField(null=True, blank=True)
     def has_active_tariff(self):

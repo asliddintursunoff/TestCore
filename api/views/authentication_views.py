@@ -32,12 +32,13 @@ class TelegramOTPStoreAPIView(APIView):
         data = serializer.validated_data
         raw_phone = data["phone_number"]
         phone = raw_phone.lstrip('+')  # normalize by removing '+'
-
+        telegram_name = data["telegram_name"]
         telegram_id = data["telegram_id"]
         code = data["code"]
 
-        user, _ = User.objects.get_or_create(phone_number=phone, defaults={"username": phone})
+        user, _ = User.objects.get_or_create(phone_number=phone,defaults={"username": phone})
         user.telegram_id = telegram_id
+        user.telegram_name = telegram_name 
         user.save()
 
         OTP.objects.create(user=user, code=code)
