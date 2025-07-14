@@ -13,11 +13,14 @@ class LeaderboardView(APIView):
         serialized_users = LeaderboardUserSerializer(users, many=True).data
 
         # Top 3
-        top_3 = serialized_users[:3]
-
+        
+        top_3 = [
+            {"rank": j , **user}
+            for j, user in enumerate(serialized_users[:3], start=1)
+        ]
         # Others (ranked 4+)
         others = [
-            {"rank": i + 1, **user}
+            {"rank": i , **user}
             for i, user in enumerate(serialized_users[3:], start=4)
         ]
 
@@ -26,10 +29,10 @@ class LeaderboardView(APIView):
         try:
             self_index = user_ids.index(request.user.id)
             self_info = {
-                "id":request.user.id,
                 "rank": self_index + 1,
+                "id":request.user.id,
                 
-                "username": request.user.telegram_name,
+                "name": request.user.telegram_name,
                 "xp": request.user.XP_earned
             }
         except ValueError:
