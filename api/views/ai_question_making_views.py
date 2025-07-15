@@ -86,7 +86,7 @@ class TakingQuestionFromFileAPIView(APIView):
             questions_lst = asyncio.run(test_take_calling_async(taking_seperate_questions_as_list,chunk_size))
             final_json  =merge_questions(questions_lst)
             final_json = adding_picture_for_test(final_json)
-            final_json["test_name"] = f"{today}-{os.path.splitext(file.name)[0]}"
+            final_json["test_name"] = final_json["subjects"][0]["subject_type"]
          
             user = request.user
             final_json["created_by"] = user.id
@@ -153,7 +153,7 @@ class CreatingNewQuestionFromFileAPIView(APIView):
             final_json = adding_picture_for_test(final_json)
             
            
-            final_json["test_name"] = f"{today}-{os.path.splitext(file.name)[0]}"
+            final_json["test_name"] = final_json["subjects"][0]["subject_type"]
             user = request.user
             final_json["created_by"] = user.id
             picture_path = final_json.pop("picture", None)  # remove before validation
