@@ -127,6 +127,7 @@ def generate(question):
 
         end = time.time()
         print(f"Execution time: {end - start:.4f} seconds")
+        print(f"{response.text}")
         return response.text
 
     except Exception as e:

@@ -11,10 +11,14 @@ def asking_seperating_questions_from_AI(questions):
         - Physics (render equations in LaTeX)
         - Chemistry, History, English, etc. (clean grammar, fix OCR artifacts)
     3. When you detect mathematical notation (like integrals, fractions, powers, roots, trigonometric functions, etc.), convert it to proper **LaTeX format** for rendering in frontend apps.
-
+    Detect and set `"subject_type"` using this list:
+       [Biology, Chemistry, English, Geography, Uzbek_language, Physics, History, Math, Others]  
+       - Use keywords in subject name or question content  
+         e.g., algebra/calculus → Math, atoms/reactions → Chemistry, grammar → English, etc.
     4. Use this exact JSON structure:
 
-       {{
+       {{   
+            "subject_type": "string",
             "subject_name": "string",
             "questions": [
                 {{
@@ -30,7 +34,7 @@ def asking_seperating_questions_from_AI(questions):
                 }}
             ]
             }}
-
+       
         5. Return **only valid JSON**, with no markdown (no triple backticks), no explanations, no comments — just the JSON object.
         6. language should be same with questions.
         7. Read the multiple-choice question.
@@ -56,10 +60,16 @@ def ask_ai_to_generate_new_questions(existing_questions):
         - Match the **same topic and difficulty level**
         - Have the **same number of answer choices** as the corresponding original question
         - Contain **only one correct answer** marked with `"is_true": "true"` and all others `"false"`
-
+        - When you make mathematical notation (like integrals, fractions, powers, roots, trigonometric functions, etc.), convert it to proper **LaTeX format** for rendering in frontend apps.
+    Detect and set `"subject_type"` using this list:
+       [Biology, Chemistry, English, Geography, Uzbek_language, Physics, History, Math, Others]  
+       - Use keywords in subject name or question content  
+         e.g., algebra/calculus → Math, atoms/reactions → Chemistry, grammar → English, etc.
+         "subject_name" should look like this, but if question in other language subject_name also should be in that language.
     4. Use this exact JSON format:
 
-    {{
+
+    {{  "subject_type": "string",
         "subject_name": "string",
         "questions": [
             {{
@@ -73,7 +83,7 @@ def ask_ai_to_generate_new_questions(existing_questions):
             }}
         ]
     }}
-
+   
     5. Return **only valid JSON** (no markdown, no triple backticks, no explanation — just JSON).
     6. Use the **same language** as the input data.
     7. Preserve the **number of multiple-choice answers per question**.

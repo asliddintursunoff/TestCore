@@ -8,7 +8,9 @@ from api.serializers.PDF_serializer import PDFuploadSerializer
 from api.utils.extracting_text_from_pdf import extract_individual_questions,all_question_joined_from_file,grouping_questions
 from api.ai_logics.ai_connection_function import generate,generate_async,number_of_all_api_tokens
 from rest_framework import permissions
-
+import os
+from django.conf import settings
+from django.core.files import File
 import asyncio
 from api.ai_logics.ai_requests_text import asking_seperating_questions_from_AI,ask_ai_to_generate_new_questions
 from api.utils.calculating_XP import merge_questions
@@ -17,10 +19,14 @@ from api.serializers.classic_testSZ import ClassicTestDBSerializer
 from datetime import datetime
 from drf_spectacular.utils import extend_schema,extend_schema_view
 from drf_spectacular.utils import OpenApiExample, OpenApiResponse
-
+from random import randint
 
 today = datetime.now().date()
-
+def adding_picture_for_test(final_json):
+    random_num = randint(1,5)
+    final_json["picture"] = f"api/subjects_photo_as_static/{final_json["subjects"][0]["subject_type"]}/{random_num}.jpg"
+    print(final_json["picture"])
+    return final_json
 
 
 
@@ -82,7 +88,7 @@ class TakingQuestionFromFileAPIView(APIView):
             final_json["test_name"] = f"{today}-{file.name}"
             user = request.user
             final_json["created_by"] = user.id
-           
+            
  
             
             serializer = ClassicTestDBSerializer(data=final_json)
@@ -129,17 +135,35 @@ class CreatingNewQuestionFromFileAPIView(APIView):
 
             questions_lst = asyncio.run(test_create_calling_async(taking_seperate_questions_as_list,chunk_size))
             final_json  =merge_questions(questions_lst)
-
-            final_json  = merge_questions(questions_lst)
+            final_json = adding_picture_for_test(final_json)
+            
+           
             final_json["test_name"] = f"{today}-{file.name}"
             user = request.user
             final_json["created_by"] = user.id
+            picture_path = final_json.pop("picture", None)  # remove before validation
             serializer = ClassicTestDBSerializer(data=final_json)
 
-            if serializer.is_valid():
-                test_obj = serializer.save()  
 
-                return Response({"id": test_obj.id,"success":True}, status=201)
+
+
+            if serializer.is_valid():
+                test_obj = serializer.save()
+
+# ✅ Now assign picture if path exists
+                if picture_path:
+                    full_path = os.path.join(settings.BASE_DIR, picture_path)
+                    print("Looking for image at:", full_path)
+
+                    if os.path.isfile(full_path):
+                        with open(full_path, 'rb') as f:
+                            test_obj.picture.save(os.path.basename(picture_path), File(f), save=True)
+                            print("✅ Picture saved successfully.")
+                    else:
+                        print("❌ Picture file not found:", full_path)
+                
+
+                return Response({"id": test_obj.id,"success":True,"final_json":final_json}, status=201)
             else:
                 return Response(serializer.errors, status=400)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -4,6 +4,8 @@ from .userDB import User
 class ClassicTestDB(models.Model):
     created_by = models.ForeignKey(User,on_delete=models.CASCADE,null=True,default=True)
     test_name = models.CharField(max_length=200)
+    picture = models.ImageField(upload_to='test_pictures/', null=True, blank=True)
+
     time = models.PositiveIntegerField(default=0, help_text="Time in minutes")
     price_for_test = models.FloatField(default=0)
     is_olympiad_test = models.BooleanField(default=False)

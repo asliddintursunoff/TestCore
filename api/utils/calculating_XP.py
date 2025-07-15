@@ -29,28 +29,46 @@ def DTMcalculating_earned_XP(test_id,correct_answers_number):
 
 
 
+
+
+
+
+
+
 def merge_questions(raw_list):
-    merged = {}
-    all_questions = []
+    grouped = {}  # Key: (subject_type, subject_name) → merged subject dict
 
     for item in raw_list:
-        # Remove markdown formatting if present
+        # Clean potential markdown
         clean_text = re.sub(r"^```json\n?|```$", "", item.strip())
 
         try:
             data = json.loads(clean_text)
 
-            # Make sure it's the expected format
-            if isinstance(data, dict) and "subject_name" in data and "questions" in data:
-                subject_name = data["subject_name"]
-                if not merged:
-                    merged["subject_name"] = subject_name
-                    merged["questions"] = []
-                merged["questions"].extend(data["questions"])
+            subject_type = data.get("subject_type", "").strip()
+            subject_name = data.get("subject_name", "").strip()
+            questions = data.get("questions", [])
+
+            # Skip if missing fields or no questions
+            if not (subject_type and subject_name and questions):
+                continue
+
+            key = (subject_type, subject_name)
+
+            if key not in grouped:
+                grouped[key] = {
+                    "subject_type": subject_type,
+                    "subject_name": subject_name,
+                    "questions": []
+                }
+
+            grouped[key]["questions"].extend(questions)
+
         except json.JSONDecodeError as e:
             print(f"Skipping item due to JSON error: {e}")
             continue
 
     return {
-        "subjects": [merged]
+        "subjects": list(grouped.values())
     }
+
