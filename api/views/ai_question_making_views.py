@@ -132,7 +132,8 @@ class TakingQuestionFromFileAPIView(APIView):
 class CreatingNewQuestionFromFileAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     parser_classes = (MultiPartParser, FormParser)
- 
+    
+
     def post(self, request, *args, **kwargs):
         serializer = PDFuploadSerializer(data=request.data)
         if serializer.is_valid():

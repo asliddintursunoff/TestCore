@@ -28,12 +28,28 @@ urlpatterns = [
     #
     # listing classic tests belong to one user
     path("getting-classic-tests-belong-to-one-user/",classic_tests_views.ClassicTestListAPIView.as_view()),
+    #main leader bord
+    path("classic-test/<int:id>/",classic_tests_views.ClassicTestDetailAPIView.as_view()),
+    #
+    #classic test update
+    path("classic-test-update/<int:id>/",classic_tests_views.ClassicTestDetailUpdateAPIView.as_view()),
+    #
+
+    #classic test question update
+    path("classic-test-question/<int:id>/",classic_tests_views.ClassicQuestionUpdateAPIView.as_view()),
+    #
+    #classic test question update
+    path("classic-test/delete/<int:id>/",classic_tests_views.ClassicTestDeleteAPIView.as_view()),
+    #sic test question delete
+    path("classic-test-question/delete/<int:id>/",classic_tests_views.ClassicQuestionDeleteAPIView.as_view()),
+    #
     #getting classic test pdf
     path("getting-test-teacherpanel-info/<int:classic_test_id>/",classic_test_utils_views.Classic_Test_Utils_Views.as_view()),
     #
     #main leader bord
     path("main-leaderbord/",user_rating_views.LeaderboardView.as_view()),
     #
+    
 
     #main leader bord
     path("main-classic-leaderbord/<int:classic_test_id>",user_rating_views.LeaderBoardForClassTestView.as_view()),
