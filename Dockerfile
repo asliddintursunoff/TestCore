@@ -20,8 +20,3 @@ COPY . .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Run Django setup
-RUN python manage.py collectstatic --noinput
-RUN python manage.py migrate
-
-# Start Gunicorn as the main web server
-CMD ["gunicorn", "project.wsgi:application", "--bind", "0.0.0.0:8000"]
