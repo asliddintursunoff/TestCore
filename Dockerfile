@@ -1,5 +1,6 @@
 FROM python:3.12-slim
 
+# System dependencies for LaTeX & static builds
 RUN apt-get update && apt-get install -y \
     texlive-latex-base \
     texlive-latex-recommended \
@@ -9,10 +10,18 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     && apt-get clean
 
+# Set work directory
 WORKDIR /app
+
+# Copy project files
 COPY . .
+
+# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-CMD python manage.py migrate && \
-    python manage.py collectstatic --noinput && \
-    gunicorn project.wsgi:application --bind 0.0.0.0:$PORT
+# Run Django setup
+RUN python manage.py collectstatic --noinput
+RUN python manage.py migrate
+
+# Start Gunicorn as the main web server
+CMD ["gunicorn", "project.wsgi:application", "--bind", "0.0.0.0:8000"]
