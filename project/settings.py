@@ -11,8 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Security settings
 DEBUG = os.getenv("DEBUG", "False") == "True"
 SECRET_KEY = os.getenv("SECRET_KEY","nl^6ld+_kgqgj$&t28m)q9-r!&^()&32u5q6zpejvcdnul(%sl")
-ALLOWED_HOSTS = ["*"]
-#os.getenv("ALLOWED_HOSTS", "").split(",")
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
 
 # CSRF protection for production
@@ -21,7 +20,7 @@ CSRF_TRUSTED_ORIGINS = [
     "https://web-production-da966.up.railway.app",
     "https://testcore.uz",
     "https://localhost:3000", 
-    "http://localhost:5173"
+    "http://localhost:5173",
     "https://testcoreuz.vercel.app/",
      # for local frontend (optional)
 ]
@@ -33,6 +32,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://testcoreuz.vercel.app/",
 
 ]
+CORS_ALLOW_CREDENTIALS = True
 
 # Application definition
 INSTALLED_APPS = [
