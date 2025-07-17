@@ -19,4 +19,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 EXPOSE 8080
 
-CMD ["gunicorn", "project.wsgi:application", "--bind", "0.0.0.0:8080"]
+EXPOSE 8080
+
+CMD sh -c "python manage.py collectstatic --noinput && \
+           python manage.py migrate && \
+           gunicorn testcore.wsgi:application --bind 0.0.0.0:${PORT}"
