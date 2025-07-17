@@ -1,18 +1,22 @@
+# Use Python slim image
 FROM python:3.11-slim
 
-# Install system dependencies
-RUN apt-get update && \
-    apt-get install -y texlive-latex-base && \
-    apt-get clean
+# Install required Linux packages (LaTeX)
+RUN apt-get update && apt-get install -y \
+    texlive-latex-base \
+    && apt-get clean
 
-# Set working directory
+# Set working directory inside the container
 WORKDIR /app
 
-# Copy project files into container
+# Set PYTHONPATH so Django finds modules
+ENV PYTHONPATH="/app"
+
+# Copy project files into the container
 COPY . .
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Run Django commands
+# Default command to run server
 CMD ["sh", "-c", "python manage.py collectstatic --noinput && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]
