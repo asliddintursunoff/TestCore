@@ -7,17 +7,14 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     && apt-get clean
 
-# Set work directory
 WORKDIR /app
-
-# Set PYTHONPATH so Django can find modules
 ENV PYTHONPATH="/app"
 
-# Copy project files
 COPY . .
 
-# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Run server with gunicorn
-CMD ["sh", "-c", "python manage.py collectstatic --noinput && python manage.py migrate && gunicorn project.wsgi:application --bind 0.0.0.0:8080"]
+# Expose port 8080 for Railway
+EXPOSE 8080
+
+CMD ["gunicorn", "project.wsgi:application", "--bind", "0.0.0.0:8080", "--log-level", "debug"]
