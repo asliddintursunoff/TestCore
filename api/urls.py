@@ -31,6 +31,9 @@ urlpatterns = [
     #main leader bord
     path("classic-test/<int:id>/",classic_tests_views.ClassicTestDetailAPIView.as_view()),
     #
+    # GETTING test by its unique code
+    path("classic-test/unique-code/<int:unique_code>/",classic_tests_views.ClassicTestDetailforUniqueIDAPIView.as_view(),name= "getting_test"),
+    #
     #classic test update
     path("classic-test-update/<int:id>/",classic_tests_views.ClassicTestDetailUpdateAPIView.as_view()),
     #

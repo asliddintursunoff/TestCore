@@ -78,7 +78,11 @@ class TakingQuestionFromFileAPIView(APIView):
                 for chunk in file.chunks():
                     f.write(chunk)
 
-            extracted_questions_from_file = all_question_joined_from_file(temp_path)
+            try:
+                extracted_questions_from_file = all_question_joined_from_file(temp_path)
+            finally:
+                if os.path.exists(temp_path):
+                    os.remove(temp_path)
             taking_seperate_questions_as_list = extract_individual_questions(extracted_questions_from_file)
             token_number = number_of_all_api_tokens()
             chunk_size = max(1, len(taking_seperate_questions_as_list) // token_number)
@@ -144,7 +148,11 @@ class CreatingNewQuestionFromFileAPIView(APIView):
                 for chunk in file.chunks():
                     f.write(chunk)
 
-            extracted_questions_from_file = all_question_joined_from_file(temp_path)
+            try:
+                extracted_questions_from_file = all_question_joined_from_file(temp_path)
+            finally:
+                if os.path.exists(temp_path):
+                    os.remove(temp_path)
             taking_seperate_questions_as_list = extract_individual_questions(extracted_questions_from_file)
             token_number = number_of_all_api_tokens()
             chunk_size = max(1, len(taking_seperate_questions_as_list) // token_number)

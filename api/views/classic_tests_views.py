@@ -33,6 +33,25 @@ class ClassicTestDetailAPIView(generics.RetrieveAPIView):
 
 
 @extend_schema(
+    tags=["Classic Tests"],)
+class ClassicTestDetailforUniqueIDAPIView(generics.RetrieveAPIView):
+    # serializer_class = ClassicTestDBSerializer()
+    permission_classes = [permissions.IsAuthenticated]
+    lookup_field = 'unique_code' 
+
+    def get_queryset(self):
+        return ClassicTestDB.objects.filter(created_by=self.request.user)
+    
+    def get_serializer(self, *args, **kwargs):
+        kwargs['fields'] = ['id',"created_by",'test_name', 'time', 'subjects']
+        return ClassicTestDBSerializer(*args, **kwargs)
+
+
+
+
+
+
+@extend_schema(
     tags=["Classic Tests"],
     summary="Update a Classic Test",
     description="""

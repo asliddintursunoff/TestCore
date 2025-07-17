@@ -5,7 +5,8 @@ from django.core.files import File
 import os
 from django.conf import settings
 import shutil
-
+from django.urls import reverse
+from api.utils.qr_code_generator import qr_code_pic
 class ClassicAnswerDBSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClassicAnswerDB
@@ -105,6 +106,11 @@ class ClassicTestDBSerializer(serializers.ModelSerializer):
 
         # Create the test object without the picture
         test = ClassicTestDB.objects.create(**validated_data)
+        url_path = reverse('getting_test', kwargs={'unique_code': test.unique_code})
+        qr_picture = qr_code_pic(url_path)
+        if qr_picture:
+            test.qr_code_picture = qr_picture
+            test.save()
 
         if picture_path:
             # Convert relative string to full path (adjust if needed)

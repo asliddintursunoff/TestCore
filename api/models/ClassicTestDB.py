@@ -1,17 +1,29 @@
 from django.db import models
 from .userDB import User
+from random import randint
 
 class ClassicTestDB(models.Model):
     created_by = models.ForeignKey(User,on_delete=models.CASCADE,null=True,default=True)
     test_name = models.CharField(max_length=200)
     picture = models.ImageField(upload_to='test_pictures/', null=True, blank=True)
-
+    qr_code_picture = models.ImageField(upload_to='qr_code_classic/', null=True, blank=True)
+    unique_code = models.IntegerField(unique=True,blank=True)
     time = models.PositiveIntegerField(default=0, help_text="Time in minutes")
     price_for_test = models.FloatField(default=0)
     is_olympiad_test = models.BooleanField(default=False)
     def __str__(self):
         return f"{self.test_name} ({self.created_by})"
 
+    def save(self, *args, **kwargs):
+        if not self.unique_code:
+            self.unique_code = self.generate_unique_code()
+        super().save(*args, **kwargs)
+
+    def generate_unique_code(self):
+        while True:
+            code = str(randint(100000, 999999))
+            if not ClassicTestDB.objects.filter(unique_code=code).exists():
+                return code
     class Meta:
         verbose_name = "Classic Test"
         verbose_name_plural = "Classic Testlar"
