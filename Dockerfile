@@ -1,24 +1,23 @@
-# Use Python slim image
 FROM python:3.12.3-slim
 
-
-# Install required Linux packages (LaTeX)
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     texlive-latex-base \
+    build-essential \
+    libpq-dev \
     && apt-get clean
 
-# Set working directory inside the container
+# Set work directory
 WORKDIR /app
 
-# Set PYTHONPATH so Django finds modules
+# Set PYTHONPATH so Django can find modules
 ENV PYTHONPATH="/app"
 
-# Copy project files into the container
+# Copy project files
 COPY . .
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Default command to run server
-RUN pip install gunicorn
+# Run server with gunicorn
 CMD ["sh", "-c", "python manage.py collectstatic --noinput && python manage.py migrate && gunicorn project.wsgi:application --bind 0.0.0.0:8080"]
