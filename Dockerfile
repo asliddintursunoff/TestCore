@@ -1,7 +1,8 @@
 FROM python:3.12.3-slim
 
-# Install LaTeX and system dependencies
+# Install LaTeX, system dependencies, and locales
 RUN apt-get update && apt-get install -y \
+    locales \
     texlive-latex-base \
     texlive-latex-extra \
     texlive-fonts-recommended \
@@ -10,14 +11,19 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     && apt-get clean
 
+# Enable UTF-8 locale
+RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
+    locale-gen
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US:en
+ENV LC_ALL=en_US.UTF-8
+
 WORKDIR /app
 ENV PYTHONPATH="/app"
 
 COPY . .
 
 RUN pip install --no-cache-dir -r requirements.txt
-
-EXPOSE 8080
 
 EXPOSE 8080
 

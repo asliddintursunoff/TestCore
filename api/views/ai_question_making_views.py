@@ -150,14 +150,22 @@ class CreatingNewQuestionFromFileAPIView(APIView):
 
             try:
                 extracted_questions_from_file = all_question_joined_from_file(temp_path)
+                
             finally:
                 if os.path.exists(temp_path):
                     os.remove(temp_path)
             taking_seperate_questions_as_list = extract_individual_questions(extracted_questions_from_file)
+            if not taking_seperate_questions_as_list:
+                return Response({"error": "No questions could be extracted"}, status=400)
+
             token_number = number_of_all_api_tokens()
             chunk_size = max(1, len(taking_seperate_questions_as_list) // token_number)
 
-            questions_lst = asyncio.run(test_create_calling_async(taking_seperate_questions_as_list,chunk_size))
+            try:
+                questions_lst = asyncio.run(test_create_calling_async(taking_seperate_questions_as_list, chunk_size))
+            except Exception as e:
+                return Response({"error": str(e)}, status=500)
+
             final_json  =merge_questions(questions_lst)
             final_json = adding_picture_for_test(final_json)
             
