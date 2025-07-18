@@ -5,7 +5,7 @@ import io
 from PIL import Image
 import pytesseract
 import re
-from fpdf import FPDF
+
 
 
 # for extracting text from files
@@ -43,16 +43,27 @@ def extract_info_from_pdf(pdf_path):
 
 
 #for getting joined text taken from extract_info_from_pdf
-def all_question_joined_from_file(file_path:list):
+# def all_question_joined_from_file(file_path:list):
+#     file_text = extract_info_from_pdf(file_path)
+#     all_text = "\n".join(page["text"] for page in file_text)
+#     return all_text
+    
+def all_question_joined_from_file(file_path: str):
     file_text = extract_info_from_pdf(file_path)
-    all_text = "\n".join(page["text"] for page in file_text)
+
+    all_text = "\n".join(
+        (page["text"] + "\n" + "\n".join(page["images"])).strip()
+        for page in file_text
+    )
+
+    print("🧪 Extracted preview:", repr(all_text[:500]))
     return all_text
-    
-    
+
+
 #for seperating questions one by one
 def extract_individual_questions(text) -> list:
     # Split where a question starts (e.g., '1.' or '12.')
-    question_parts = re.split(r'\n(?=\d{1,2}[\.])', text)
+    question_parts = re.split(r'\n(?=\d{1,2}[\.\)\-—])', text)
     questions = []
     for part in question_parts:
         cleaned = part.strip()

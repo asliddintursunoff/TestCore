@@ -66,58 +66,114 @@ class TakingQuestionFromFileAPIView(APIView):
     
     permission_classes = [permissions.IsAuthenticated]
     parser_classes = [MultiPartParser, FormParser]
-
-
     def post(self, request, *args, **kwargs):
         serializer = PDFuploadSerializer(data=request.data)
         if serializer.is_valid():
             file = serializer.validated_data['file_upload']
-
             temp_path = f"temp_{file.name}"
+
             with open(temp_path, "wb+") as f:
                 for chunk in file.chunks():
                     f.write(chunk)
 
             try:
                 extracted_questions_from_file = all_question_joined_from_file(temp_path)
+                if not extracted_questions_from_file.strip():
+                    return Response({"error": "Failed to extract any readable text from the PDF."}, status=400)
+
+                questions = extract_individual_questions(extracted_questions_from_file)
+                if not questions:
+                    return Response({"error": "No questions found in the PDF file."}, status=400)
+
+                token_number = number_of_all_api_tokens()
+                chunk_size = max(1, len(questions) // token_number)
+
+                try:
+                    questions_lst = asyncio.run(test_create_calling_async(questions, chunk_size))
+                except Exception as e:
+                    return Response({"error": f"Question generation failed: {str(e)}"}, status=500)
+
+                final_json = merge_questions(questions_lst)
+                final_json = adding_picture_for_test(final_json)
+
+                final_json["test_name"] = final_json["subjects"][0]["subject_type"]
+                final_json["created_by"] = request.user.id
+                picture_path = final_json.pop("picture", None)
+
+                serializer = ClassicTestDBSerializer(data=final_json)
+                if serializer.is_valid():
+                    test_obj = serializer.save()
+
+                    if picture_path:
+                        full_path = os.path.join(settings.BASE_DIR, picture_path)
+                        if os.path.isfile(full_path):
+                            with open(full_path, 'rb') as f:
+                                test_obj.picture.save(os.path.basename(picture_path), File(f), save=True)
+
+                    return Response({"id": test_obj.id, "success": True}, status=201)
+                else:
+                    return Response(serializer.errors, status=400)
+
+            except Exception as e:
+                print("❌ Unexpected PDF processing error:", str(e))
+                return Response({"error": f"Unexpected error: {str(e)}"}, status=500)
             finally:
                 if os.path.exists(temp_path):
                     os.remove(temp_path)
-            taking_seperate_questions_as_list = extract_individual_questions(extracted_questions_from_file)
-            token_number = number_of_all_api_tokens()
-            chunk_size = max(1, len(taking_seperate_questions_as_list) // token_number)
 
-            questions_lst = asyncio.run(test_take_calling_async(taking_seperate_questions_as_list,chunk_size))
-            final_json  =merge_questions(questions_lst)
-            final_json = adding_picture_for_test(final_json)
-            final_json["test_name"] = final_json["subjects"][0]["subject_type"]
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+    # def post(self, request, *args, **kwargs):
+    #     serializer = PDFuploadSerializer(data=request.data)
+    #     if serializer.is_valid():
+    #         file = serializer.validated_data['file_upload']
+
+    #         temp_path = f"temp_{file.name}"
+    #         with open(temp_path, "wb+") as f:
+    #             for chunk in file.chunks():
+    #                 f.write(chunk)
+
+    #         try:
+    #             extracted_questions_from_file = all_question_joined_from_file(temp_path)
+    #         finally:
+    #             if os.path.exists(temp_path):
+    #                 os.remove(temp_path)
+    #         taking_seperate_questions_as_list = extract_individual_questions(extracted_questions_from_file)
+    #         token_number = number_of_all_api_tokens()
+    #         chunk_size = max(1, len(taking_seperate_questions_as_list) // token_number)
+
+    #         questions_lst = asyncio.run(test_take_calling_async(taking_seperate_questions_as_list,chunk_size))
+    #         final_json  =merge_questions(questions_lst)
+    #         final_json = adding_picture_for_test(final_json)
+    #         final_json["test_name"] = final_json["subjects"][0]["subject_type"]
          
-            user = request.user
-            final_json["created_by"] = user.id
+    #         user = request.user
+    #         final_json["created_by"] = user.id
             
  
             
-            picture_path = final_json.pop("picture", None)  # remove before validation
-            serializer = ClassicTestDBSerializer(data=final_json)
+    #         picture_path = final_json.pop("picture", None)  # remove before validation
+    #         serializer = ClassicTestDBSerializer(data=final_json)
 
-            if serializer.is_valid():
-                test_obj = serializer.save()
+    #         if serializer.is_valid():
+    #             test_obj = serializer.save()
 
-                # ✅ Now assign picture if path exists
-                if picture_path:
-                    full_path = os.path.join(settings.BASE_DIR, picture_path)
-                    print("Looking for image at:", full_path)
+    #             # ✅ Now assign picture if path exists
+    #             if picture_path:
+    #                 full_path = os.path.join(settings.BASE_DIR, picture_path)
+    #                 print("Looking for image at:", full_path)
 
-                    if os.path.isfile(full_path):
-                        with open(full_path, 'rb') as f:
-                            test_obj.picture.save(os.path.basename(picture_path), File(f), save=True)
-                            print("✅ Picture saved successfully.")
-                    else:
-                        print("❌ Picture file not found:", full_path)
-                return Response({"id": test_obj.id,"success":True}, status=status.HTTP_201_CREATED)
-            else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    #                 if os.path.isfile(full_path):
+    #                     with open(full_path, 'rb') as f:
+    #                         test_obj.picture.save(os.path.basename(picture_path), File(f), save=True)
+    #                         print("✅ Picture saved successfully.")
+    #                 else:
+    #                     print("❌ Picture file not found:", full_path)
+    #             return Response({"id": test_obj.id,"success":True}, status=status.HTTP_201_CREATED)
+    #         else:
+    #             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @extend_schema_view(
@@ -148,28 +204,53 @@ class CreatingNewQuestionFromFileAPIView(APIView):
                 for chunk in file.chunks():
                     f.write(chunk)
 
+            # try:
+            #     extracted_questions_from_file = all_question_joined_from_file(temp_path)
+                
+            # finally:
+            #     if os.path.exists(temp_path):
+            #         os.remove(temp_path)
+            # taking_seperate_questions_as_list = extract_individual_questions(extracted_questions_from_file)
+            # if not taking_seperate_questions_as_list:
+            #     return Response({"error": "No questions could be extracted"}, status=400)
+
+            # token_number = number_of_all_api_tokens()
+            # chunk_size = max(1, len(taking_seperate_questions_as_list) // token_number)
+
+            # try:
+            #     questions_lst = asyncio.run(test_create_calling_async(taking_seperate_questions_as_list, chunk_size))
+            # except Exception as e:
+            #     return Response({"error": str(e)}, status=500)
+
+            # final_json  =merge_questions(questions_lst)
+            # final_json = adding_picture_for_test(final_json)
+            
+            print("✅ Step 1: Serializer valid, file received")
+
             try:
                 extracted_questions_from_file = all_question_joined_from_file(temp_path)
+                print("✅ Step 2: Text extracted")
                 
-            finally:
-                if os.path.exists(temp_path):
-                    os.remove(temp_path)
-            taking_seperate_questions_as_list = extract_individual_questions(extracted_questions_from_file)
-            if not taking_seperate_questions_as_list:
-                return Response({"error": "No questions could be extracted"}, status=400)
+                taking_seperate_questions_as_list = extract_individual_questions(extracted_questions_from_file)
+                print("✅ Step 3: Questions extracted:", len(taking_seperate_questions_as_list))
 
-            token_number = number_of_all_api_tokens()
-            chunk_size = max(1, len(taking_seperate_questions_as_list) // token_number)
+                if not taking_seperate_questions_as_list:
+                    return Response({"error": "No questions found in the file"}, status=400)
 
-            try:
+                token_number = number_of_all_api_tokens()
+                chunk_size = max(1, len(taking_seperate_questions_as_list) // token_number)
+
                 questions_lst = asyncio.run(test_create_calling_async(taking_seperate_questions_as_list, chunk_size))
-            except Exception as e:
-                return Response({"error": str(e)}, status=500)
+                print("✅ Step 4: Questions processed asynchronously")
 
-            final_json  =merge_questions(questions_lst)
-            final_json = adding_picture_for_test(final_json)
-            
-           
+                final_json = merge_questions(questions_lst)
+                final_json = adding_picture_for_test(final_json)
+                print("✅ Step 5: Final JSON prepared")
+
+            except Exception as e:
+                print("❌ ERROR during file processing:", repr(e))
+                return Response({"error": f"Failed to process file: {str(e)}"}, status=500)
+
             final_json["test_name"] = final_json["subjects"][0]["subject_type"]
             user = request.user
             final_json["created_by"] = user.id
