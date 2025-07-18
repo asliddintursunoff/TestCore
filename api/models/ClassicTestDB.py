@@ -8,11 +8,14 @@ class ClassicTestDB(models.Model):
     picture = models.ImageField(upload_to='test_pictures/', null=True, blank=True)
     qr_code_picture = models.ImageField(upload_to='qr_code_classic/', null=True, blank=True)
     unique_code = models.IntegerField(unique=True,blank=True)
+
     time = models.PositiveIntegerField(default=0, help_text="Time in minutes")
+    test_language = models.CharField(max_length=30,default="english")
+    difficulty = models.CharField(max_length=20,default="qiyin")
     price_for_test = models.FloatField(default=0)
     is_olympiad_test = models.BooleanField(default=False)
     def __str__(self):
-        return f"{self.test_name} ({self.created_by})"
+        return f"id: {self.id} {self.test_name} ({self.created_by})"
 
     def save(self, *args, **kwargs):
         if not self.unique_code:

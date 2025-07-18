@@ -10,7 +10,7 @@ from api.views import (dtm_test_result_views,
                        json_to_pdf_views,
                        classic_tests_views,
                        classic_test_result_views,
-                       classic_test_utils_views,
+                       teacher_panel_views,
                        user_rating_views)
 from api.views.authentication_views import TelegramOTPStoreAPIView, OTPVerifyJWTAPIView,CustomTokenRefreshView
 from rest_framework_simplejwt.views import TokenRefreshView
@@ -34,10 +34,15 @@ urlpatterns = [
     # GETTING test by its unique code
     path("classic-test/unique-code/<int:unique_code>/",classic_tests_views.ClassicTestDetailforUniqueIDAPIView.as_view(),name= "getting_test"),
     #
+    #  GETTING Share data of classic test
+    path("classic-test/shares/<int:id>/",teacher_panel_views.SHareTestRetrieveAPIView.as_view(),name= "getting_test"),
+    #
     #classic test update
     path("classic-test-update/<int:id>/",classic_tests_views.ClassicTestDetailUpdateAPIView.as_view()),
     #
-
+    #classic test update
+    path("teacher-panel-leaderboard/<int:classic_test_id>/",user_rating_views.LeaderBoardForClassTestView.as_view()),
+    #
     #classic test question update
     path("classic-test-question/<int:id>/",classic_tests_views.ClassicQuestionUpdateAPIView.as_view()),
     #
@@ -47,7 +52,7 @@ urlpatterns = [
     path("classic-test-question/delete/<int:id>/",classic_tests_views.ClassicQuestionDeleteAPIView.as_view()),
     #
     #getting classic test pdf
-    path("getting-test-teacherpanel-info/<int:classic_test_id>/",classic_test_utils_views.Classic_Test_Utils_Views.as_view()),
+    path("getting-test-teacherpanel-info/<int:classic_test_id>/",teacher_panel_views.Classic_Test_Utils_Views.as_view()),
     #
     #main leader bord
     path("main-leaderbord/",user_rating_views.LeaderboardView.as_view()),
@@ -55,8 +60,7 @@ urlpatterns = [
     
 
     #main leader bord
-    path("main-classic-leaderbord/<int:classic_test_id>",user_rating_views.LeaderBoardForClassTestView.as_view()),
-    #
+   
     #getting classic test pdf
     path("getting-test-pdf/<int:classic_test_id>/",json_to_pdf_views.GetClassicTestPDFbyID.as_view()),
     #

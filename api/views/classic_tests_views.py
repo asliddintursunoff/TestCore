@@ -93,7 +93,7 @@ class ClassicTestDetailUpdateAPIView(generics.RetrieveUpdateAPIView):
         return ClassicTestDB.objects.filter(created_by=self.request.user)
     
     def get_serializer(self, *args, **kwargs):
-        kwargs['fields'] = ['test_name', 'time','subjects']
+        kwargs['fields'] = ['id','test_name', 'time','test_language','difficulty','subjects']
         return ClassicTestDBSerializer2(*args, **kwargs)
 
 

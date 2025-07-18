@@ -219,7 +219,7 @@ class ClassicTestDBSerializer2(serializers.ModelSerializer):
 
     class Meta:
         model = ClassicTestDB
-        fields = ['id', 'created_by', 'test_name', 'time', 'price_for_test',"picture", 'is_olympiad_test', 'subjects']
+        fields = ['id', 'created_by', 'test_name', 'time', 'price_for_test',"picture", 'is_olympiad_test','test_language', 'difficulty','subjects']
 
     def __init__(self, *args, **kwargs):
         # Accept "fields" as a context param or kwarg
