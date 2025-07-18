@@ -1,8 +1,10 @@
 FROM python:3.12.3-slim
 
-# Install LaTeX, system dependencies, and locales
+# Install dependencies
 RUN apt-get update && apt-get install -y \
     locales \
+    tesseract-ocr \
+    libtesseract-dev \
     texlive-latex-base \
     texlive-latex-extra \
     texlive-fonts-recommended \
