@@ -58,31 +58,8 @@ class ClassicTestDetailforUniqueIDAPIView(generics.RetrieveAPIView):
         This endpoint allows an authenticated user to update a Classic Test
         including its test name, duration, and associated subjects.
         Only the subjects' names and point values can be updated — questions and answers are untouched.
-    """,
-    request=ClassicTestDBSerializer2,
-    responses={
-        200: OpenApiResponse(
-            response=ClassicTestDBSerializer2,
-            description="Successfully updated the classic test.",
-            examples=[
-                OpenApiExample(
-                    "Update Payload Example",
-                    value={
-                        "test_name": "Updated Test Name",
-                        "time": 60,
-                        "subjects": [
-                            {
-                                "id": 1,
-                                "subject_name": "Updated Math",
-                                "point_for_each_question": 3
-                            }
-                        ]
-                    },
-                    request_only=True
-                )
-            ]
-        )
-    }
+    """
+
 )
 class ClassicTestDetailUpdateAPIView(generics.RetrieveUpdateAPIView):
 
