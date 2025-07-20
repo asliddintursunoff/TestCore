@@ -200,7 +200,7 @@ class ClassicBaseTestSerializer(serializers.ModelSerializer):
 
 
 class ClassicSubjectSerializer2(serializers.ModelSerializer):
-    
+    point_for_each_question = serializers.FloatField()
     class Meta:
         model = ClassicSubject
         fields = ['id', 'subject_name', 'point_for_each_question']
