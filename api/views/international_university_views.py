@@ -10,8 +10,8 @@ from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_sche
 
 @extend_schema_view(
     get=extend_schema(
-        tags=["International University and Faculty"],
-        summary="Get all international universities",
+        tags=["International and Private University and Faculty"],
+        summary="Get all  universities",
         description="Returns a list of all international universities, including name, short name, and image.",
         responses={
             200: OpenApiResponse(response=UniversitySerializer, description="List of universities")
@@ -24,7 +24,43 @@ class UniversityListAPIView(generics.ListAPIView):
 
 @extend_schema_view(
     get=extend_schema(
-        tags=["International University and Faculty"],
+        tags=["International and Private University and Faculty"],
+        summary="Get all international universities",
+        description="Returns a list of all international universities, including name, short name, and image.",
+        responses={
+            200: OpenApiResponse(response=UniversitySerializer, description="List of universities")
+        }
+    )
+)
+class InternationalUniversityListAPIView(generics.ListAPIView):
+    queryset = UniversityDB.objects.filter(university_type = "xalqaro")
+    serializer_class = UniversitySerializer
+
+
+
+@extend_schema_view(
+    get=extend_schema(
+        tags=["International and Private University and Faculty"],
+        summary="Get all Private universities",
+        description="Returns a list of all international universities, including name, short name, and image.",
+        responses={
+            200: OpenApiResponse(response=UniversitySerializer, description="List of universities")
+        }
+    )
+)
+class PrivateUniversityListAPIView(generics.ListAPIView):
+    queryset = UniversityDB.objects.filter(university_type = "xususiy")
+    serializer_class = UniversitySerializer
+
+
+
+
+
+
+
+@extend_schema_view(
+    get=extend_schema(
+        tags=["International and Private University and Faculty"],
         summary="Get all faculties by university ID",
         description="Returns all faculties that belong to the university identified by the provided ID.",
         parameters=[
@@ -44,10 +80,14 @@ class UniversityListAPIView(generics.ListAPIView):
 )
 
 
+
+
 class FacultyListAPIView(generics.RetrieveAPIView):
     queryset = UniversityDB.objects.all()
     serializer_class = FacultiesSerializer
     lookup_field = 'id'
+
+
 
 class UniversityDetailView(generics.RetrieveAPIView):
     queryset = UniversityDB.objects.all()
