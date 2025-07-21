@@ -1,7 +1,7 @@
 import requests
 from rest_framework.decorators import api_view,permission_classes
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from api.serializers.international_testSZ import QuestionDetailSerializer
 from api.models.international_university_testDB import QuestionDB
@@ -9,47 +9,28 @@ from api.models.DTMtestDB import DTMQuestionDB
 from rest_framework import status
 from api.ai_logics.ai_connection_function import generate
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse
+from rest_framework import serializers
 
+class AskResultResponseSerializer(serializers.Serializer):
+    question = serializers.CharField()
+    answer = serializers.CharField()
 @extend_schema(
     tags=["AI Solve"],
     summary="Solve a question using AI",
-    description=(
-        "Provide a `test_type_id` and `question_id` to get an AI-generated explanation and result.\n\n"
-        "`test_type_id=1` = International university test question, `test_type_id=2` = DTM question.\n"
-        "Returns the original question and a detailed answer."
-    ),
-    parameters=[
-        OpenApiParameter(
-            name="test_type_id",
-            description="1 for International university test, 2 for DTM test",
-            required=True,
-            type=int,
-            location=OpenApiParameter.PATH,
-        ),
-        OpenApiParameter(
-            name="question_id",
-            description="ID of the question to solve",
-            required=True,
-            type=int,
-            location=OpenApiParameter.PATH,
-        ),
-    ],
+    description="...",
+    parameters=[...],  # keep your existing parameters
     responses={
-        200: OpenApiResponse(
-            description="Question and AI-generated answer",
-            examples=[
-                {
-                    "question": "What is 2 + 2?",
-                    "answer": "The answer is 4. Because 2 added to 2 equals 4."
-                }
-            ]
-        ),
+        200: AskResultResponseSerializer,
         404: OpenApiResponse(description="Question or test type not found"),
         500: OpenApiResponse(description="Internal error during AI generation"),
     }
 )
+
+
+
 class AskResultAPIView(APIView):
-    permission_classes = [AllowAny] 
+    permission_classes = [IsAuthenticated]
+    serializer_class = AskResultResponseSerializer 
     def post(self, request,test_type_id, question_id):
         try:
             if test_type_id == 1:

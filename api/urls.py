@@ -13,7 +13,7 @@ from api.views import (dtm_test_result_views,
                        teacher_panel_views,
                        user_rating_views)
 from api.views.authentication_views import TelegramOTPStoreAPIView, OTPVerifyJWTAPIView,CustomTokenRefreshView
-from rest_framework_simplejwt.views import TokenRefreshView
+
 
 
 urlpatterns = [
