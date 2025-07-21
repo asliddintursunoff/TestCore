@@ -14,13 +14,27 @@ class ClassicTestDB(models.Model):
     difficulty = models.CharField(max_length=20,default="qiyin")
     price_for_test = models.FloatField(default=0)
     is_olympiad_test = models.BooleanField(default=False)
+    total_number_of_questions = models.IntegerField(default=0)
     def __str__(self):
         return f"id: {self.id} {self.test_name} ({self.created_by})"
 
+  
     def save(self, *args, **kwargs):
+        # Save initially to ensure the instance has an ID
+        if not self.pk:
+            super().save(*args, **kwargs)
+
+        # Count the number of related questions
+        question_count = ClassicQuestionDB.objects.filter(subject__test=self).count()
+        self.total_number_of_questions = question_count
+
+        # Assign a unique code if not already set
         if not self.unique_code:
             self.unique_code = self.generate_unique_code()
+
+        # Save again with updated total_number_of_questions
         super().save(*args, **kwargs)
+
 
     def generate_unique_code(self):
         while True:
