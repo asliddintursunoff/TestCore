@@ -12,7 +12,7 @@ class UniversitySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UniversityDB
-        fields = ["id", "university_name", "university_short_name", "university_picture"]
+        fields = ["id", "university_name", "university_short_name", "university_logo_picture"]
 
 
 class FacultyBaseSerializer(serializers.ModelSerializer):
@@ -29,7 +29,7 @@ class FacultiesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UniversityDB
-        fields = ["university_name", "university_short_name", "university_picture", "faculties"]
+        fields = ["university_name", "university_short_name", "university_logo_picture", "faculties"]
 
     def get_faculties(self, obj):
         faculty = FacultyDB.objects.filter(university=obj)
