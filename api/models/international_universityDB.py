@@ -31,6 +31,11 @@ class UniversityDB(models.Model):
 
 class EducationLanguage(models.Model):
     language = models.CharField(max_length=50)
+
+
+    def __str__(self):
+        return f"{self.language}"
+    
 class FacultyDB(models.Model):
 
     university = models.ForeignKey(UniversityDB,on_delete=models.CASCADE, related_name="faculties")
