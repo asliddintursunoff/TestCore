@@ -1,8 +1,13 @@
 from django.db import models
 
+university_type_choices = [
+    ("xalqaro" , "Xalqaro"),
+    ("xususiy" , "Xususiy")
+]
 
     
 class UniversityDB(models.Model):
+    university_type = models.CharField(max_length= 7,choices=university_type_choices,default="xalqaro")
     university_name = models.CharField(max_length=200)
     university_short_name = models.CharField(max_length=200)
     description = models.TextField(default=" ")
