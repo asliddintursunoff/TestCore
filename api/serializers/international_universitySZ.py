@@ -31,11 +31,7 @@ class FacultiesSerializer(serializers.ModelSerializer):
         model = UniversityDB
         fields = '__all__'
     
-    def get_fields(self):
-        fields = super().get_fields()
-        fields['faculties'] = self.fields['faculties']
-        fields['total_faculty_numbers'] = self.fields['total_faculty_numbers']
-        return fields
+
     
     def get_faculties(self, obj):
         faculty = FacultyDB.objects.filter(university=obj)
