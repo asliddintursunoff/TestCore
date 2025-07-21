@@ -1,5 +1,5 @@
 from django.db import models
-from .international_universityDB import FacultyDB
+from .international_universityDB import FacultyDB,UniversityDB
 
 
 
@@ -9,6 +9,12 @@ class TestDB(models.Model):
         FacultyDB,null=True,blank=True,
         on_delete=models.CASCADE,
         related_name="tests"
+    )
+    university_root = models.ForeignKey(
+        UniversityDB,null=True,blank=True,
+        on_delete=models.CASCADE,
+        related_name="tests",
+        help_text="Choose if university is not faculty based test"
     )
     test_name = models.CharField(max_length=200)
     time = models.PositiveIntegerField(default=0, help_text="Time in minutes")

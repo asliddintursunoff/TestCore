@@ -21,16 +21,26 @@ class FacultyBaseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FacultyDB
-        fields = ["id", "faculty_name", "description"]
+        fields = "__all__"
 
 
 class FacultiesSerializer(serializers.ModelSerializer):
     faculties = serializers.SerializerMethodField(help_text="List of faculties belonging to this university")
-
+    total_faculty_numbers = serializers.SerializerMethodField()
     class Meta:
         model = UniversityDB
-        fields = ["university_name", "university_short_name", "university_picture", "faculties"]
-
+        fields = '__all__'
+    
+    def get_fields(self):
+        fields = super().get_fields()
+        fields['faculties'] = self.fields['faculties']
+        fields['total_faculty_numbers'] = self.fields['total_faculty_numbers']
+        return fields
+    
     def get_faculties(self, obj):
         faculty = FacultyDB.objects.filter(university=obj)
         return FacultyBaseSerializer(faculty, many=True).data
+    
+    def get_total_faculty_numbers(self,obj):
+        faculty_numbers = FacultyDB.objects.filter(university=obj).count()
+        return faculty_numbers

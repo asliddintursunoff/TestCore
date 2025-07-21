@@ -10,6 +10,7 @@ class UniversityDB(models.Model):
     university_type = models.CharField(max_length= 7,choices=university_type_choices,default="xalqaro")
     university_name = models.CharField(max_length=200)
     university_short_name = models.CharField(max_length=200)
+    is_faculty_based = models.BooleanField(default=True)
     description = models.TextField(default=" ")
     university_picture = models.ImageField(upload_to="media/universities")
     university_img = models.ImageField(upload_to="media/universities",null=True,blank=True)
@@ -20,7 +21,7 @@ class UniversityDB(models.Model):
     instagram_link = models.CharField(max_length=200,null=True,blank=True)
     telegram_link = models.CharField(max_length=200,null=True,blank=True)
     website_link = models.CharField(max_length=200,null=True,blank=True)
-
+    
     class Meta:
         verbose_name = "Xalqaro Universitet"
         verbose_name_plural = "Xalqaro Universitetlar"

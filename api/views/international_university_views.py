@@ -53,6 +53,11 @@ class PrivateUniversityListAPIView(generics.ListAPIView):
     serializer_class = UniversitySerializer
 
 
+class UniversityDetailView(generics.RetrieveAPIView):
+    queryset = UniversityDB.objects.all()
+    serializer_class = UniversitySerializer
+    lookup_field = 'id'
+
 
 
 
@@ -78,19 +83,10 @@ class PrivateUniversityListAPIView(generics.ListAPIView):
         }
     )
 )
-
-
-
-
 class FacultyListAPIView(generics.RetrieveAPIView):
     queryset = UniversityDB.objects.all()
     serializer_class = FacultiesSerializer
     lookup_field = 'id'
 
 
-
-class UniversityDetailView(generics.RetrieveAPIView):
-    queryset = UniversityDB.objects.all()
-    serializer_class = UniversitySerializer
-    lookup_field = 'id'
 
