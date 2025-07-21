@@ -18,7 +18,7 @@ class AskResultResponseSerializer(serializers.Serializer):
     tags=["AI Solve"],
     summary="Solve a question using AI",
     description="...",
-    parameters=[...],  # keep your existing parameters
+    # parameters=[...],  # keep your existing parameters
     responses={
         200: AskResultResponseSerializer,
         404: OpenApiResponse(description="Question or test type not found"),
