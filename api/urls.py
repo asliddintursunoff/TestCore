@@ -1,5 +1,5 @@
 from django.urls import path
-from api.views.international_university_views import UniversityListAPIView,FacultyListAPIView
+from api.views.international_university_views import UniversityListAPIView,FacultyListAPIView,UniversityDetailView
 from api.views import (dtm_test_result_views,
                        international_university_test_result_views, 
                        international_university_test_views, 
@@ -73,6 +73,7 @@ urlpatterns = [
     path("tests-groups/",all_test_type_views.AllTestTypeListAPIView.as_view()),
 
     path('international-universities/',UniversityListAPIView.as_view()),
+    path('international-university/<int:id>/',UniversityDetailView.as_view()),
     path('international-universities/<int:id>/faculties/',FacultyListAPIView.as_view()),
     path('tests/<int:faculty_id>/',international_university_test_views.TestsAPIView.as_view()),
     path("test/<int:id>/",international_university_test_views.TestDetailAPIView.as_view()),

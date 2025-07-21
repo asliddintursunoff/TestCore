@@ -12,7 +12,7 @@ class UniversitySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UniversityDB
-        fields = ["id", "university_name", "university_short_name", "university_picture"]
+        fields = ["__all__"]
 
 
 class FacultyBaseSerializer(serializers.ModelSerializer):
