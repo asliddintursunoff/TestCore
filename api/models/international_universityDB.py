@@ -27,9 +27,20 @@ class UniversityDB(models.Model):
     
     def __str__(self):
         return f"ID: {self.id} -  name: {self.university_name}"
+    
+
+class EducationLanguage(models.Model):
+    language = models.CharField(max_length=50)
 class FacultyDB(models.Model):
+
     university = models.ForeignKey(UniversityDB,on_delete=models.CASCADE, related_name="faculties")
     faculty_name = models.CharField(max_length=200)
+    contact_sum = models.IntegerField(default=0)
+    contract_score = models.FloatField(null=True,blank=True)
+    schoolarship_score = models.FloatField(null=True,blank=True)
+    duration = models.IntegerField(default=4)
+    education_language = models.ForeignKey(EducationLanguage,on_delete=models.SET_NULL,null=True,blank=True)
+    test_subjects = models.CharField(max_length=200,null=True,blank=True)
     description = models.TextField()
 
     def __str__(self):

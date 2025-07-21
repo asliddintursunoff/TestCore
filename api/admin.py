@@ -114,3 +114,4 @@ admin.site.register(User)
 # admin.site.register(TestTypeDB)
 
 admin.site.register(ClassicTestSubmission)
+admin.site.register(EducationLanguage)
