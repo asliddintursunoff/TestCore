@@ -156,3 +156,4 @@ SPECTACULAR_SETTINGS = {
     'COMPONENT_SPLIT_REQUEST': True,
     'SERVE_INCLUDE_SCHEMA': False,
 }
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 50000  # or whatever upper limit you expect
