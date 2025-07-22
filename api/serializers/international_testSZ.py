@@ -10,20 +10,33 @@ from api.models.international_university_testDB import (
 
 
 class TestBaseSerializer(serializers.ModelSerializer):
+    
+    questions_number = serializers.SerializerMethodField()
     class Meta:
         model = TestDB
-        fields = ["id","test_name","time","test_description"]
+        fields = ['id','test_name','test_language','time','test_description','questions_number']
+
+    
+
+    def get_questions_number(self,obj):
+        return QuestionDB.objects.filter(subject__test=obj).count()
+
 
 
 class TestSerializer(serializers.ModelSerializer):
     tests = serializers.SerializerMethodField()
-    
+    university_logo = serializers.SerializerMethodField()
     class Meta:
         model = FacultyDB
-        fields = ["faculty_name","description","tests"]
+        fields = ["faculty_name",'university_logo',"tests"]
     def get_tests(self,obj):    
         test = TestDB.objects.filter(faculty = obj)
         return TestBaseSerializer(test,many = True).data
+    def get_university_logo(self, obj):
+        
+        if obj.university and obj.university.university_picture:
+            return obj.university.university_picture.url
+        return None
         
 
 class AnswerBaseSerializer(serializers.ModelSerializer):

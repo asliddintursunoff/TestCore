@@ -1,5 +1,5 @@
 from django.db import models
-from .international_universityDB import FacultyDB,UniversityDB
+from .international_universityDB import FacultyDB,UniversityDB,EducationLanguage
 
 
 
@@ -17,6 +17,7 @@ class TestDB(models.Model):
         help_text="Choose if university is not faculty based test"
     )
     test_name = models.CharField(max_length=200)
+    test_language = models.ForeignKey(EducationLanguage,on_delete=models.SET_NULL,null=True,blank=True)
     time = models.PositiveIntegerField(default=0, help_text="Time in minutes")
     test_description = models.TextField(blank=True)
     XP = models.IntegerField(default=0)

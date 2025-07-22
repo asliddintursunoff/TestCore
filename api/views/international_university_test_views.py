@@ -6,7 +6,7 @@ from rest_framework import generics
 from api.serializers.international_testSZ import TestSerializer,TestDetailSerializer
 from api.models.international_universityDB import FacultyDB
 from api.models.international_university_testDB import TestDB
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny,IsAuthenticated
 from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter, OpenApiResponse
 
 @extend_schema_view(
@@ -28,8 +28,9 @@ from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiPara
         }
     )
 )
+
 class TestsAPIView(APIView):
-    permission_classes = [AllowAny]  
+    permission_classes = [IsAuthenticated]  
     def get(self,request,faculty_id):
         faculty = get_object_or_404(FacultyDB,id=faculty_id)
         serializer = TestSerializer(faculty)
