@@ -25,13 +25,22 @@ class TestBaseSerializer(serializers.ModelSerializer):
 
 class TestSerializer(serializers.ModelSerializer):
     tests = serializers.SerializerMethodField()
+    # is_faculty_based = serializers.SerializerMethodField()
     university_logo = serializers.SerializerMethodField()
     class Meta:
         model = FacultyDB
         fields = ["faculty_name",'university_logo',"tests"]
     def get_tests(self,obj):    
-        test = TestDB.objects.filter(faculty = obj)
-        return TestBaseSerializer(test,many = True).data
+        if obj.university.is_faculty_based == True:
+            test = TestDB.objects.filter(faculty = obj)
+            
+        else:
+            test = TestDB.objects.filter(university_root = obj.university)
+        return TestBaseSerializer(test,many = True).data  
+    # def get_is_faculty_based(self,obj):
+    #     if obj.university and obj.university.is_faculty_based:
+    #         return obj.university.is_faculty_based
+    #     return None
     def get_university_logo(self, obj):
         
         if obj.university and obj.university.university_picture:
@@ -39,6 +48,26 @@ class TestSerializer(serializers.ModelSerializer):
         return None
         
 
+
+class TestUniversityBasedSerializer(serializers.ModelSerializer):
+    tests = serializers.SerializerMethodField()
+    is_faculty_based = serializers.SerializerMethodField()
+    university_logo = serializers.SerializerMethodField()
+    class Meta:
+        model = FacultyDB
+        fields = ["faculty_name",'is_faculty_based','university_logo',"tests"]
+    def get_tests(self,obj):    
+        test = TestDB.objects.filter(faculty = obj)
+        return TestBaseSerializer(test,many = True).data
+    def get_is_faculty_based(self,obj):
+        if obj.university and obj.university.is_faculty_based:
+            return obj.university.is_faculty_based
+        return None
+    def get_university_logo(self, obj):
+        
+        if obj.university and obj.university.university_picture:
+            return obj.university.university_picture.url
+        return None
 class AnswerBaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = AnswerDB

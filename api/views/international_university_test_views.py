@@ -37,6 +37,8 @@ class TestsAPIView(APIView):
         return Response(serializer.data)
     
 
+    
+
 #for get method
 @extend_schema_view(
     get=extend_schema(
