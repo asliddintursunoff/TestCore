@@ -1,5 +1,5 @@
 from drf_spectacular.utils import extend_schema,extend_schema_view
-from api.utils.calculating_XP import calculating_earned_XP
+from api.utils.calculating_XP import calculating_earned_XP,calculating_percentage
 from rest_framework import views
 from api.models.international_university_test_result import TestDB,TestSubmission,AnswerDB,AnswerSubmission,QuestionDB
 from rest_framework.response import Response
@@ -75,7 +75,7 @@ class TestSubmissionAPIView(views.APIView):
                 except AnswerDB.DoesNotExist:
                      raise NotFound(detail="There is no true answers for this question ID")
                 
-                if answer_id == true_answer.id:
+                if true_answer and answer_id == true_answer.id:
                     total_correct+=1
                     is_correct_answer = True
 
@@ -85,10 +85,16 @@ class TestSubmissionAPIView(views.APIView):
                                                 is_correct_answer = is_correct_answer)
                 
             #Calculating XP based on correct answers
-            earned_XP = calculating_earned_XP(test_id,total_correct)
-            
+            total_questions_number = QuestionDB.objects.filter(
+                                                        subject__test=test_id
+                                                        ).count()
+            earned_XP = calculating_earned_XP(test_id,total_questions_number,total_correct)
+            score = calculating_percentage(total_questions_number,total_correct)
+
+
             submission.total_correct = total_correct
             submission.XP = earned_XP
+            submission.score = score
             submission.save()
             
             json_response = {
@@ -130,11 +136,14 @@ class TestSubmittedResultAPIView(views.APIView):
         question_count = QuestionDB.objects.filter(
             subject__test=test
         ).count()
+        
         data = {
             "id":test.id,
             "test_name":test.test_name,
             "time_for_test":test.time,
             "time_taken": submitted_test.time_taken,
+            "score":submitted_test.score,
+            "status": submitted_test.status,
             "total_correct_answer": submitted_test.total_correct,
             "total_questions":question_count,
             "XP_earned": submitted_test.XP,

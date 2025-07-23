@@ -5,12 +5,10 @@ import json
 from rest_framework.exceptions import ParseError
 import re
 
-def calculating_earned_XP(test_id,correct_answers_number):
+def calculating_earned_XP(test_id,total_questions_number,correct_answers_number):
     test = TestDB.objects.get(id = test_id)
     total_XP = test.XP
-    total_questions_number = QuestionDB.objects.filter(
-                                                        subject__test=test
-                                                        ).count()
+    total_questions_number = total_questions_number
     earned_XP =(total_XP*correct_answers_number)/total_questions_number 
     return earned_XP
 
@@ -29,7 +27,8 @@ def DTMcalculating_earned_XP(test_id,correct_answers_number):
 
 
 
-
+def calculating_percentage(total_questions,total_true) -> float:
+    return total_true/total_questions*100
 
 
 
