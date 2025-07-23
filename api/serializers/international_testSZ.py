@@ -91,11 +91,14 @@ class SubjectSerializer(serializers.ModelSerializer):
 class TestDetailSerializer(serializers.ModelSerializer):
     faculty_id = serializers.IntegerField(write_only=True)
     subjects = SubjectSerializer(many=True)
-    
+    questions_number = serializers.SerializerMethodField()
     class Meta:
         model = TestDB
-        fields = ["faculty_id","id",'test_name',"time","XP","subjects"]
-
+        fields = ["faculty_id","id",'test_name','test_language',"time",'test_description',"XP",'questions_number',"subjects"]
+    
+    def get_questions_number(self,obj):
+        return QuestionDB.objects.filter(subject__test=obj).count()
+        
     def create(self, validated_data):
         faculty_id = validated_data.pop("faculty_id")
         subjects_data = validated_data.pop("subjects")
@@ -199,3 +202,7 @@ class QuestionDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = QuestionDB
         fields = ["id","question","question_img","answers"]
+
+
+
+

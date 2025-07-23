@@ -1,5 +1,10 @@
 from django.urls import path
-from api.views.international_university_views import UniversityListAPIView,FacultyListAPIView,UniversityDetailView,InternationalUniversityListAPIView,PrivateUniversityListAPIView
+from api.views.international_university_views import (UniversityListAPIView,
+                                                      FacultyListAPIView,
+                                                      UniversityDetailView,
+                                                      InternationalUniversityListAPIView,
+                                                      PrivateUniversityListAPIView,
+                                                      )
 from api.views import (dtm_test_result_views,
                        international_university_test_result_views, 
                        international_university_test_views, 
@@ -79,6 +84,7 @@ urlpatterns = [
     path('international-universities/<int:id>/faculties/',FacultyListAPIView.as_view()),
     path('tests/<int:faculty_id>/',international_university_test_views.TestsAPIView.as_view()),
     path("test/<int:id>/",international_university_test_views.TestDetailAPIView.as_view()),
+    path("test-detail/<int:id>/",international_university_test_views.TestDetailRetrieveAPIView.as_view()),
     path("test-create/",international_university_test_views.FullTestCreateAPIView.as_view()),
     path("test-update/<int:id>/", international_university_test_views.FullTestUpdateAPIView.as_view()),
     path("international-university-test/submit/",international_university_test_result_views.TestSubmissionAPIView.as_view()),

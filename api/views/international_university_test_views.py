@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import generics
-from api.serializers.international_testSZ import TestSerializer,TestDetailSerializer
+from api.serializers.international_testSZ import TestSerializer,TestDetailSerializer,TestBaseSerializer
 from api.models.international_universityDB import FacultyDB
 from api.models.international_university_testDB import TestDB
 from rest_framework.permissions import AllowAny,IsAuthenticated
@@ -38,6 +38,31 @@ class TestsAPIView(APIView):
     
 
     
+@extend_schema_view(
+    get=extend_schema(
+        tags=['Internatinal University Tests'],
+       
+        parameters=[
+            OpenApiParameter(
+                name="id",
+                description="ID of the test",
+                required=True,
+                type=int,
+                location=OpenApiParameter.PATH
+            )
+        ],
+        responses={
+            200: OpenApiResponse(response=TestSerializer)
+        }
+    )
+)
+class TestDetailRetrieveAPIView(generics.RetrieveAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = TestBaseSerializer
+    queryset = TestDB.objects.all()
+    lookup_field = 'id'
+
+
 
 #for get method
 @extend_schema_view(
