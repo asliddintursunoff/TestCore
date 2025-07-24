@@ -61,3 +61,16 @@ class SubmittedTestSerializer(serializers.Serializer):
     subjects = SubmittedSubjectSerializer(many=True,read_only = True)
 
     
+class SubmittedTestDetailSerializer(serializers.Serializer):
+    submitted_test_id = serializers.IntegerField()
+    test_id = serializers.IntegerField()
+    test_name = serializers.CharField()
+    time_for_test = serializers.IntegerField()
+    time_taken = serializers.IntegerField()
+    total_correct_answer = serializers.IntegerField()
+    score = serializers.FloatField()
+    status = serializers.CharField()
+    total_questions = serializers.IntegerField()
+    XP_earned = serializers.IntegerField()
+
+

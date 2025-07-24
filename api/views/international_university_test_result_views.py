@@ -5,7 +5,7 @@ from api.models.international_university_test_result import TestDB,TestSubmissio
 from rest_framework.response import Response
 from rest_framework import status, permissions
 from api.serializers.international_test_resulltSZ import (
-    TestSubmissionSerializer,SubmittedTestSerializer)
+    TestSubmissionSerializer,SubmittedTestSerializer,SubmittedTestDetailSerializer)
 from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import NotFound
 
@@ -96,13 +96,31 @@ class TestSubmissionAPIView(views.APIView):
             submission.XP = earned_XP
             submission.score = score
             submission.save()
+
             
-            json_response = {
-                "test_id":test_id,
+            test = test_instance
+            question_count = QuestionDB.objects.filter(
+                subject__test=test
+            ).count()
+            
+            data = {
+                "submitted_test_id":submission.id,
+                # "test_id":test_id,
                 "success":True,
-                "submitted_test_id":submission.id
+                
+               
+                "test_name":test.test_name,
+                "time_for_test":test.time,
+                "time_taken": submission.time_taken,
+                "score":submission.score,
+                "status": submission.status,
+                "total_correct_answer": submission.total_correct,
+                "total_questions":question_count,
+                
+          
             }
-            return Response(json_response,status=status.HTTP_201_CREATED)
+
+            return Response(data,status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -131,22 +149,23 @@ class TestSubmittedResultAPIView(views.APIView):
 
     def get(self,request,submitted_test_id):
         
-        submitted_test = get_object_or_404(TestSubmission,id = submitted_test_id,user = request.user)
-        test = submitted_test.test
+        submission = get_object_or_404(TestSubmission,id = submitted_test_id,user = request.user)
+        test = submission.test
         question_count = QuestionDB.objects.filter(
             subject__test=test
         ).count()
         
         data = {
+            "submitted_test_id":submission.id,
             "id":test.id,
             "test_name":test.test_name,
             "time_for_test":test.time,
-            "time_taken": submitted_test.time_taken,
-            "score":submitted_test.score,
-            "status": submitted_test.status,
-            "total_correct_answer": submitted_test.total_correct,
+            "time_taken": submission.time_taken,
+            "score":submission.score,
+            "status": submission.status,
+            "total_correct_answer": submission.total_correct,
             "total_questions":question_count,
-            "XP_earned": submitted_test.XP,
+            "XP_earned": submission.XP,
             "subjects":[]
         }
 
@@ -160,7 +179,7 @@ class TestSubmittedResultAPIView(views.APIView):
                 
             for question in subject.questions.all():
                 answers_data = []
-                chosen = AnswerSubmission.objects.filter(submission=submitted_test, question = question).first()
+                chosen = AnswerSubmission.objects.filter(submission=submission, question = question).first()
                 is_correct_answered = False
                 for answer in question.answers.all():
                     if chosen is not None and answer.id == chosen.chosen_answer :
@@ -187,6 +206,58 @@ class TestSubmittedResultAPIView(views.APIView):
             data["subjects"].append(subject_data)
 
         serializer = SubmittedTestSerializer(data, context={'request': request})
+        return Response(serializer.data)
+
+
+
+
+              
+@extend_schema(
+    tags=["Internatinal University Tests/Result"],
+    summary="View result of a submitted test",
+   
+    parameters=[
+        OpenApiParameter(
+            name="submitted_test_id",
+            description="ID of the submitted test",
+            required=True,
+            type=int,
+            location=OpenApiParameter.PATH
+        )
+    ],
+    responses={
+        200: SubmittedTestSerializer,
+        404: OpenApiResponse(description="Submitted test not found")
+    }
+)
+class TestSubmittedResultDetailAPIView(views.APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+
+    def get(self,request,submitted_test_id):
+        
+        submission = get_object_or_404(TestSubmission,id = submitted_test_id,user = request.user)
+        test = submission.test
+        question_count = QuestionDB.objects.filter(
+            subject__test=test
+        ).count()
+        
+        data = {
+            "submitted_test_id":submission.id,
+            "test_id":test.id,
+            "test_name":test.test_name,
+            "time_for_test":test.time,
+            "time_taken": submission.time_taken,
+            "score":submission.score,
+            "status": submission.status,
+            "total_correct_answer": submission.total_correct,
+            "total_questions":question_count,
+            "XP_earned": submission.XP,
+            "subjects":[]
+        }
+
+
+        serializer = SubmittedTestDetailSerializer(data, context={'request': request})
         return Response(serializer.data)
 
 
