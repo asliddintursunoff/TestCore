@@ -7,7 +7,7 @@ class ClassicTestDB(models.Model):
     test_name = models.CharField(max_length=200)
     picture = models.ImageField(upload_to='test_pictures/', null=True, blank=True)
     qr_code_picture = models.ImageField(upload_to='qr_code_classic/', null=True, blank=True)
-    unique_code = models.IntegerField(unique=True,blank=True)
+    unique_code = models.IntegerField(unique=True,blank=True,null=True)
 
     time = models.PositiveIntegerField(default=0, help_text="Time in minutes")
     test_language = models.CharField(max_length=30,default="english")
