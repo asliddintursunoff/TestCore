@@ -20,6 +20,8 @@ from datetime import datetime
 from drf_spectacular.utils import extend_schema,extend_schema_view
 from drf_spectacular.utils import OpenApiExample, OpenApiResponse
 from random import randint
+from rest_framework import serializers
+from drf_spectacular.utils import inline_serializer
 
 today = datetime.now().date()
 def adding_picture_for_test(final_json):
@@ -56,7 +58,13 @@ async def test_create_calling_async(lst, size):
         description="This endpoint accepts a PDF file containing exam questions, extracts them using AI, and saves them as a structured test under the current user.",
        
         responses={
-            201: OpenApiResponse(response=ClassicTestDBSerializer, description="Test successfully created from file"),
+            201: inline_serializer(
+            name="TestCreateResponse",
+            fields={
+                'id': serializers.IntegerField(),
+                'success': serializers.BooleanField()
+            }
+            ),
             400: OpenApiResponse(description="Bad request (e.g. invalid file or data format)"),
         }
     )
@@ -127,7 +135,13 @@ class TakingQuestionFromFileAPIView(APIView):
         summary="Upload a PDF to auto-generate a test",
         description="This endpoint accepts a PDF file containing exam questions, extracts them using AI, and saves them as a structured test under the current user.",
         responses={
-            201: OpenApiResponse(response=ClassicTestDBSerializer, description="Test successfully created from file"),
+            201: inline_serializer(
+            name="TestCreateResponse",
+            fields={
+                'id': serializers.IntegerField(),
+                'success': serializers.BooleanField()
+            }
+            ),
             400: OpenApiResponse(description="Bad request (e.g. invalid file or data format)"),
         }
     )
@@ -170,16 +184,19 @@ class CreatingNewQuestionFromFileAPIView(APIView):
             user = request.user
             final_json["created_by"] = user.id
             picture_path = final_json.pop("picture", None)  # remove before validation
+            print("1❌")
             serializer = ClassicTestDBSerializer(data=final_json)
-
+            print("2❌")
 
 
 
             if serializer.is_valid():
                 test_obj = serializer.save()
+                print("3❌")
 
 # ✅ Now assign picture if path exists
                 if picture_path:
+                    print("4❌")
                     full_path = os.path.join(settings.BASE_DIR, picture_path)
                     print("Looking for image at:", full_path)
 

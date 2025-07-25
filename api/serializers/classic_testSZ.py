@@ -11,6 +11,7 @@ class ClassicAnswerDBSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClassicAnswerDB
         fields = ['id', 'answer', 'answer_picture', 'is_true']
+        read_only_fields = ['id']
 
 class ClassicQuestionDBSerializer(serializers.ModelSerializer):
     answers = ClassicAnswerDBSerializer(many=True)
@@ -18,6 +19,7 @@ class ClassicQuestionDBSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClassicQuestionDB
         fields = ['id', 'question', 'question_img', 'answers']
+        read_only_fields = ['id']
     def __init__(self, *args, **kwargs):
         # Accept "fields" as a context param or kwarg
         fields = kwargs.pop('fields', None)
@@ -31,6 +33,7 @@ class ClassicQuestionDBSerializer(serializers.ModelSerializer):
                 
 
     def create(self, validated_data):
+        validated_data.pop('id', None)
         answers_data = validated_data.pop('answers')
         question = ClassicQuestionDB.objects.create(**validated_data)
         for answer_data in answers_data:
@@ -55,8 +58,9 @@ class ClassicSubjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClassicSubject
         fields = ['id', 'subject_name', 'point_for_each_question', 'questions']
-
+        read_only_fields = ['id']
     def create(self, validated_data):
+        validated_data.pop('id', None)
         questions_data = validated_data.pop('questions')
         subject = ClassicSubject.objects.create(**validated_data)
         for question_data in questions_data:
@@ -87,7 +91,7 @@ class ClassicTestDBSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClassicTestDB
         fields = ['id', 'created_by',"unique_code", 'test_name', 'time', 'price_for_test',"picture", 'is_olympiad_test', 'subjects']
-
+        read_only_fields = ['id']
     def __init__(self, *args, **kwargs):
         # Accept "fields" as a context param or kwarg
         fields = kwargs.pop('fields', None)
@@ -101,6 +105,7 @@ class ClassicTestDBSerializer(serializers.ModelSerializer):
                 
 
     def create(self, validated_data):
+        validated_data.pop('id', None)
         subjects_data = validated_data.pop('subjects')
         picture_path = validated_data.pop('picture', None)
 

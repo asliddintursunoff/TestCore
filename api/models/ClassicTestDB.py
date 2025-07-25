@@ -20,20 +20,23 @@ class ClassicTestDB(models.Model):
 
   
     def save(self, *args, **kwargs):
-        # Save initially to ensure the instance has an ID
-        if not self.pk:
-            super().save(*args, **kwargs)
+        is_new = self.pk is None
 
-        # Count the number of related questions
-        question_count = ClassicQuestionDB.objects.filter(subject__test=self).count()
-        self.total_number_of_questions = question_count
-
-        # Assign a unique code if not already set
-        if not self.unique_code:
+        # Assign unique_code before saving
+        if is_new and not self.unique_code:
             self.unique_code = self.generate_unique_code()
 
-        # Save again with updated total_number_of_questions
+        # Save first (no double insert)
         super().save(*args, **kwargs)
+
+        # After saving, update total number of questions
+        question_count = ClassicQuestionDB.objects.filter(subject__test=self).count()
+
+        # Only update if it changed
+        if self.total_number_of_questions != question_count:
+            self.total_number_of_questions = question_count
+            super().save(update_fields=["total_number_of_questions"])
+
 
 
     def generate_unique_code(self):

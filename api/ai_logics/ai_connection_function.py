@@ -6,6 +6,15 @@ import asyncio
 import threading
 
 KEYS = [
+        'AIzaSyBELG18kptxan4isvE-6Nlw1rw9F_uzruQ',
+        'AIzaSyCN9em2EYwupZe22W13c_df6HICj3AC4IA',
+        'AIzaSyD-9992x8YMENo9KeZlEC3bBiCNeSyKns4',
+        'AIzaSyBqFPu8pgcJAYOKXE2Es9gKRv2CTfKFzvw',
+        'AIzaSyB-5PGne1IIFtPCYWD30peWNc9ufbixxnk',
+        'AIzaSyBvd7_jrJNr7PFrpS3T-xrnKwRhNgXwuP4',
+        'AIzaSyDyybMaDCNiNeESogC_BkupK7JmbVx-onQ',
+        'AIzaSyA8bgMRXrm_cWp2a7alTUTKTDY5HSK4cVM',
+        #
         "AIzaSyBGfTq-2OHWA3sQA0wHWWieR2r2OyD6Oys",
         "AIzaSyApErPsP9ufNBsr89SIZ0Jn8PwZUc4L2nk",
         "AIzaSyBDTAlV7M3DWAGspE8JH5eIIdK5MoSOKSs",
