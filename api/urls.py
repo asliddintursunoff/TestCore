@@ -85,6 +85,7 @@ urlpatterns = [
     path('tests/<int:faculty_id>/',international_university_test_views.TestsAPIView.as_view()),
     path("test/<int:id>/",international_university_test_views.TestDetailAPIView.as_view()),
     path("test-detail/<int:id>/",international_university_test_views.TestDetailRetrieveAPIView.as_view()),
+    path("test-choose/<int:faculty_id>/",international_university_test_views.TestChooseAPIView.as_view()),
     path("test-create/",international_university_test_views.FullTestCreateAPIView.as_view()),
     path("test-update/<int:id>/", international_university_test_views.FullTestUpdateAPIView.as_view()),
     path("international-university-test/submit/",international_university_test_result_views.TestSubmissionAPIView.as_view()),

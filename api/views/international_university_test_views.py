@@ -8,7 +8,8 @@ from api.models.international_universityDB import FacultyDB
 from api.models.international_university_testDB import TestDB
 from rest_framework.permissions import AllowAny,IsAuthenticated
 from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter, OpenApiResponse
-
+from rest_framework import status
+from api.models.international_university_test_result import TestSubmission
 @extend_schema_view(
     get=extend_schema(
         tags=['Internatinal University Tests'],
@@ -86,6 +87,83 @@ class TestDetailAPIView(generics.RetrieveAPIView):
     queryset = TestDB.objects.all()
     serializer_class = TestDetailSerializer
     lookup_field = "id"
+
+
+@extend_schema_view(
+    get = extend_schema(
+        tags=['International University Tests'],
+        summary="Get a test ID by faculty ID",
+        description="Provide a `faculty_id` to retrieve a random test ID that the user has not submitted yet.",
+        parameters=[
+            OpenApiParameter(
+                name="faculty_id",
+                description="ID of the faculty to retrieve the test from",
+                required=True,
+                type=int,
+                location=OpenApiParameter.PATH
+            )
+        ],
+        responses={
+            200: OpenApiResponse(
+                response=None,
+                description="Returns the test ID if found, along with success status."
+            ),
+            204: OpenApiResponse(
+                response=None,
+                description="No available tests found for the user."
+            ),
+            404: OpenApiResponse(
+                response=None,
+                description="Faculty not found."
+            ),
+            500: OpenApiResponse(
+                response=None,
+                description="Unexpected server error."
+            ),
+        }
+    )
+)
+class TestChooseAPIView(APIView):
+    
+    permission_classes = [IsAuthenticated]
+    def get(self, request, faculty_id):
+        try:
+            user = request.user
+
+            try:
+                faculty = FacultyDB.objects.get(id=faculty_id)
+            except FacultyDB.DoesNotExist:
+                return Response({"success": False, "error": "Faculty not found."}, status=status.HTTP_404_NOT_FOUND)
+
+            submitted_tests = TestSubmission.objects.filter(user=user).values_list('test_id', flat=True)
+
+            if faculty.university.is_faculty_based:
+                base_tests = TestDB.objects.filter(faculty=faculty)
+            else:
+                base_tests = TestDB.objects.filter(university_root=faculty.university)
+
+            tests = base_tests.exclude(id__in=submitted_tests) if submitted_tests.exists() else base_tests
+
+            test = tests.first()
+            if not test:
+                return Response({"success": False, "message": "No available tests found."}, status=status.HTTP_204_NO_CONTENT)
+
+            data = {
+                "test_id": test.id,
+                "success": True
+            }
+            return Response(data, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({"success": False, "error": f"Unexpected error: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+
+
+
+
+
 
 
 # for POST method
