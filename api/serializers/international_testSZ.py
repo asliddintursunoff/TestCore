@@ -12,14 +12,17 @@ from api.models.international_university_testDB import (
 class TestBaseSerializer(serializers.ModelSerializer):
     
     questions_number = serializers.SerializerMethodField()
+    language = serializers.SerializerMethodField()
     class Meta:
         model = TestDB
-        fields = ['id','test_name','test_language','time','test_description','questions_number']
+        fields = ['id','test_name','language','time','test_description','questions_number']
 
     
 
     def get_questions_number(self,obj):
         return QuestionDB.objects.filter(subject__test=obj).count()
+    def get_language(self,obj):
+        return obj.test_language.language
 
 
 

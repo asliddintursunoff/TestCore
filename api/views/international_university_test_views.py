@@ -147,12 +147,12 @@ class TestChooseAPIView(APIView):
             test = tests.first()
             if not test:
                 return Response({"success": False, "message": "No available tests found."}, status=status.HTTP_204_NO_CONTENT)
+      
+            
 
-            data = {
-                "test_id": test.id,
-                "success": True
-            }
-            return Response(data, status=status.HTTP_200_OK)
+            serialized_test = TestBaseSerializer(test).data
+
+            return Response(serialized_test, status=status.HTTP_200_OK)
 
         except Exception as e:
             return Response({"success": False, "error": f"Unexpected error: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
