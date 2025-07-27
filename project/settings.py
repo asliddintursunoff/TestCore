@@ -177,6 +177,6 @@ PAYCOM_SETTINGS = {
     "KASSA_ID": "6886967183c7a2ce00162a1b",  # token
     "SECRET_KEY": "9POk094&W?@X@t81?Gp65AVwgersTk60O601",  # password
     "ACCOUNTS": {
-        "KEY": "tariff_id"
+        "KEY": "order_id"
     },
 }
