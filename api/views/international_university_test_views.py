@@ -10,6 +10,7 @@ from rest_framework.permissions import AllowAny,IsAuthenticated
 from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter, OpenApiResponse
 from rest_framework import status
 from api.models.international_university_test_result import TestSubmission
+from random import random
 @extend_schema_view(
     get=extend_schema(
         tags=['Internatinal University Tests'],
@@ -146,9 +147,12 @@ class TestChooseAPIView(APIView):
 
             test = tests.first()
             if not test:
-                return Response({"success": False, "message": "No available tests found."}, status=status.HTTP_204_NO_CONTENT)
-      
-            
+                test = base_tests.order_by('?').first()
+
+            if not test:
+                return Response({"success": False, "error": "No tests found."}, status=status.HTTP_404_NOT_FOUND)
+
+                
 
             serialized_test = TestBaseSerializer(test).data
 

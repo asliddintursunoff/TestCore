@@ -90,7 +90,7 @@ class ClassicTestDBSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ClassicTestDB
-        fields = ['id', 'created_by',"unique_code", 'test_name', 'time', 'price_for_test',"picture", 'is_olympiad_test', 'subjects']
+        fields = ['id', 'created_by',"unique_code", 'difficulty','test_language','test_name', 'time', 'price_for_test',"picture", 'is_olympiad_test', 'subjects']
         read_only_fields = ['id']
     def __init__(self, *args, **kwargs):
         # Accept "fields" as a context param or kwarg

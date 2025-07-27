@@ -43,7 +43,7 @@ class ClassicTestDetailforUniqueIDAPIView(generics.RetrieveAPIView):
         return ClassicTestDB.objects.filter(created_by=self.request.user)
     
     def get_serializer(self, *args, **kwargs):
-        kwargs['fields'] = ['id',"created_by",'test_name', 'time', 'subjects']
+        kwargs['fields'] = ['id',"created_by",'test_name','difficulty','test_language', 'time', 'subjects']
         return ClassicTestDBSerializer(*args, **kwargs)
 
 
