@@ -46,6 +46,7 @@ jsonschema-specifications==2025.4.1
 kombu==5.5.4
 migrate==0.3.8
 packaging==25.0
+PaycomUz==3.1
 pillow==11.2.1
 prompt_toolkit==3.0.51
 psycopg2-binary==2.9.10
