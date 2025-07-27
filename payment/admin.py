@@ -3,7 +3,7 @@
 # Register your models here.
 from django.contrib import admin
 from paycomuz.models import Transaction
-
+from .models import PaymentOrders
 # Unregister the broken TransactionAdmin from the package
 try:
     admin.site.unregister(Transaction)
@@ -14,3 +14,6 @@ except admin.sites.NotRegistered:
 @admin.register(Transaction)
 class FixedTransactionAdmin(admin.ModelAdmin):
     list_display = [field.name for field in Transaction._meta.fields]  # Safe dynamic display
+
+
+admin.site.register(PaymentOrders)
