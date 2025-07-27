@@ -11,12 +11,12 @@ class CheckOrder(Paycom):
         
         order = PaymentOrders.objects.get(id = account["tariff_id"],is_paid = False)
 
-        if not order.price:
-            return self.ORDER_NOT_FOND
-        if order.price*100 != amount:
-            return self.INVALID_AMOUNT
         if not order:
             return self.ORDER_NOT_FOND
+        
+        if order.price * 100 != amount:
+            return self.INVALID_AMOUNT
+        
         
         return self.ORDER_FOUND
     
@@ -24,7 +24,7 @@ class CheckOrder(Paycom):
         order = PaymentOrders.objects.filter(id = transaction.order_key).first()
         if not order:
             return self.ORDER_NOT_FOND
-        order.is_finished = True
+        order.is_paid = True
         order.save()
         
 
