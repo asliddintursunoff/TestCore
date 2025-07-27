@@ -9,7 +9,7 @@ class CheckOrder(Paycom):
         # if not user:
         #     return self.ORDER_NOT_FOND
         
-        order = PaymentOrders.objects.get(id = account["tariff_id"],is_paid = False)
+        order = PaymentOrders.objects.get(id = account["order_id"],is_paid = False)
 
         if not order:
             return self.ORDER_NOT_FOND
