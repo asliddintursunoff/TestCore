@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'nested_admin',
     'api',
     'rest_framework',
+    'django_celery_beat',
     'rest_framework_simplejwt.token_blacklist',
     "drf_spectacular",
 ]
@@ -160,5 +161,5 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = 50000  # or whatever upper limit you expect
 
 
 # settings.py
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_BROKER_URL = os.environ.get("REDIS_URL")  # Railway sets this in env
+CELERY_RESULT_BACKEND = CELERY_BROKER_URL
