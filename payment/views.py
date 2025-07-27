@@ -5,28 +5,24 @@ from .models import PaymentOrders
 # from django 
 class CheckOrder(Paycom):
     def check_order(self, amount, account, *args, **kwargs):
-        # user = User.objects.get(id = account["user_id"])
-        # if not user:
-        #     return self.ORDER_NOT_FOND
-        
-        order = PaymentOrders.objects.get(id = account["order_id"],is_paid = False)
+        try:
+            order = PaymentOrders.objects.get(id=account["order_id"], is_paid=False)
+        except (PaymentOrders.DoesNotExist, KeyError, TypeError):
+            return self.ORDER_NOT_FOND  # Proper Paycom error: -31050
 
-        if not order:
-            return self.ORDER_NOT_FOND
-        
-        if order.price * 100 != amount:
-            return self.INVALID_AMOUNT
-        
-        
-        return self.ORDER_FOUND
-    
+        if int(order.price * 100) != int(amount):
+            return self.INVALID_AMOUNT  # Proper Paycom error: -31001
+
+        return self.ORDER_FOUND  # Paycom expects {"allow": True}
+
     def successfully_payment(self, account, transaction, *args, **kwargs):
-        order = PaymentOrders.objects.filter(id = transaction.order_key).first()
-        if not order:
+        try:
+            order = PaymentOrders.objects.get(id=transaction.order_key)
+        except PaymentOrders.DoesNotExist:
             return self.ORDER_NOT_FOND
+
         order.is_paid = True
         order.save()
-        
 
     def cancel_payment(self, account, transaction, *args, **kwargs):
 
