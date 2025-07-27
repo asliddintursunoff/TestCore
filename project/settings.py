@@ -44,8 +44,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'nested_admin',
-    'api',
     'rest_framework',
+    'paycomuz',
+    'payment',
+    'api',
     'django_celery_beat',
     'rest_framework_simplejwt.token_blacklist',
     "drf_spectacular",
@@ -163,3 +165,18 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = 50000  # or whatever upper limit you expect
 # settings.py
 CELERY_BROKER_URL = os.environ.get("REDIS_URL")  # Railway sets this in env
 CELERY_RESULT_BACKEND = CELERY_BROKER_URL
+
+
+USE_TZ = True
+TIME_ZONE = 'Asia/Tashkent'
+
+
+#payment (payme)
+
+PAYCOM_SETTINGS = {
+    "KASSA_ID": "6886967183c7a2ce00162a1b",  # token
+    "SECRET_KEY": "9POk094&W?@X@t81?Gp65AVwgersTk60O601",  # password
+    "ACCOUNTS": {
+        "KEY": "tariff_id"
+    },
+}
