@@ -34,6 +34,7 @@ class CheckOrder(Paycom):
             now = timezone.now()
             user.tariff_expiry = now + timedelta(days=tariff.duration_days)
             
+            user.save()
             order.save()
         except Exception as e:
             logger.error(f"ERROR in payment confirm: {str(e)}",exc_info=True)
