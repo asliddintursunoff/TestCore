@@ -2,7 +2,7 @@ from django.db import models
 
 class Tariff(models.Model):
     tariff_name = models.CharField(max_length=200)
-    tariff_price = models.FloatField(default=0)
+    tariff_price = models.IntegerField(default=0)
     is_free = models.BooleanField(default=True)
     max_usage_of_solving_ielts_test = models.IntegerField(default=20)
     max_usage_of_creating_test_by_AI = models.IntegerField(default=2)

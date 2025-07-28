@@ -10,7 +10,7 @@ from rest_framework import status
 from api.ai_logics.ai_connection_function import generate
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse
 from rest_framework import serializers
-
+import json
 class AskResultResponseSerializer(serializers.Serializer):
     question = serializers.CharField()
     answer = serializers.CharField()
@@ -27,36 +27,53 @@ class AskResultResponseSerializer(serializers.Serializer):
 )
 
 
-
 class AskResultAPIView(APIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = AskResultResponseSerializer 
-    def post(self, request,test_type_id, question_id):
+    serializer_class = AskResultResponseSerializer
+
+    def post(self, request, test_type_id, question_id):
         try:
             if test_type_id == 1:
                 question_obj = QuestionDB.objects.get(id=question_id)
-
-            elif test_type_id==2:
-                question_obj = DTMQuestionDB.objects.get(id = question_id)
+            elif test_type_id == 2:
+                question_obj = DTMQuestionDB.objects.get(id=question_id)
             else:
-                return Response({"error":"Test type id not found"},status=status.HTTP_404_NOT_FOUND)
-            
+                return Response({"error": "Test type id not found"}, status=status.HTTP_404_NOT_FOUND)
         except QuestionDB.DoesNotExist:
             return Response({"error": "Question not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        prompt = f"solve this question and give exact result with clear instructions {question_obj.question}"
-       
+        prompt = f"""
+        You are an expert math tutor. Solve the following question precisely.
+
+        Question: {question_obj.question}
+
+        Return the result ONLY as a JSON object with the following fields:
+        - "answer": the correct final answer
+        - "explanation": a clear step-by-step explanation
+
+        Use this format:
+        {{
+          "answer": "...",
+          "explanation": "..."
+        }}
+
+        Do not return anything else.
+        """
+
         try:
-            answer = generate(prompt)
+            model_response = generate(prompt)  # Your Gemini model call
+            parsed = json.loads(model_response.strip())
+
             return Response({
                 "question": question_obj.question,
-                "answer": answer
+                "answer": parsed.get("answer"),
+                "explanation": parsed.get("explanation")
             })
+
+        except json.JSONDecodeError:
+            return Response({"error": "Model did not return valid JSON", "raw": model_response}, status=500)
         except Exception as e:
             return Response({"error": str(e)}, status=500)
-
-
-
 
 
 
