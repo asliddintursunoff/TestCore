@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'paycomuz',
     'payment',
     'api',
+    'user_app',
     'django_celery_beat',
     'rest_framework_simplejwt.token_blacklist',
     "drf_spectacular",
