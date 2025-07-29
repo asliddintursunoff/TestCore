@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'payment',
     'api',
     'user_app',
+    'tariff_app',
     'django_celery_beat',
     'rest_framework_simplejwt.token_blacklist',
     "drf_spectacular",
@@ -175,8 +176,8 @@ TIME_ZONE = 'Asia/Tashkent'
 #payment (payme)
 
 PAYCOM_SETTINGS = {
-    "KASSA_ID": "6886967183c7a2ce00162a1b",  # token
-    "SECRET_KEY": "9POk094&W?@X@t81?Gp65AVwgersTk60O601",  # password
+    "KASSA_ID": os.environ.get("KASSA_ID"), # token
+    "SECRET_KEY": os.environ.get("PAYME_SECRET_KEY"),  # password
     "ACCOUNTS": {
         "KEY": "order_id"
     },
