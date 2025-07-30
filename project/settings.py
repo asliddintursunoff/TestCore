@@ -88,11 +88,20 @@ WSGI_APPLICATION = 'project.wsgi.application'
 
 # PostgreSQL DB from Railway
 DATABASES = {
-    'default': dj_database_url.config(
-        default=os.getenv('DATABASE_URL'),
-        conn_max_age=600,
+    'default': dj_database_url.parse(
+        os.getenv('DATABASE_URL'),
+        conn_max_age=0,  # Set to 0 to avoid Django's pooling; we'll use geventpool instead
         ssl_require=True
     )
+}
+
+# Override the backend engine for geventpool
+DATABASES['default']['ENGINE'] = 'django_db_geventpool.backends.postgresql_psycopg2'
+
+# Add pooling options
+DATABASES['default']['OPTIONS'] = {
+    'MAX_CONNS': 10,     # Adjust according to Railway plan (20 or fewer)
+    'REUSE_CONNS': 5,    # Optional: persistent idle pool size
 }
 import os
 

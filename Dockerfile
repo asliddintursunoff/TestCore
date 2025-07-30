@@ -31,4 +31,4 @@ EXPOSE 8080
 
 CMD ["sh", "-c", "python manage.py collectstatic --noinput && \
                  python manage.py migrate && \
-                 python manage.py runserver 0.0.0.0:8080"]
+                 gunicorn project.wsgi:application --worker-class=gevent --workers=2 --bind 0.0.0.0:8080"]
