@@ -1,9 +1,14 @@
 from django.db import models
 
 
+dtm_test_choice = [
+    ("main_subject", "Main Subject"),
+    ("mandatory_subject","Mandatory Subject")
+]
 
 class DTM_Subjects(models.Model):
     subject_name = models.CharField(max_length=200)
+    test_type = models.CharField(max_length=20,choices=dtm_test_choice)
 
 
     def __str__(self):
@@ -12,17 +17,12 @@ class DTM_Test_Language(models.Model):
     language = models.CharField(max_length=200)
     def __str__(self):
         return self.language
-dtm_test_choice = [
-    ("main_subject", "Main Subject"),
-    ("mandatory_subject","Mandatory Subject")
-]
 
 
 class Test(models.Model):
     subject_name = models.ForeignKey(DTM_Subjects,on_delete=models.CASCADE)
     score = models.FloatField(default=0)
     language = models.ForeignKey(DTM_Test_Language,on_delete=models.CASCADE)
-    test_type = models.CharField(max_length=20,choices=dtm_test_choice)
 
     def __str__(self):
         return f"{self.id} - {self.subject_name} - {self.test_type}"

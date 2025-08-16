@@ -16,7 +16,8 @@ from api.views import (dtm_test_result_views,
                        classic_tests_views,
                        classic_test_result_views,
                        teacher_panel_views,
-                       user_rating_views)
+                       user_rating_views,
+                       dtm_test)
 from api.views.authentication_views import TelegramOTPStoreAPIView, OTPVerifyJWTAPIView,CustomTokenRefreshView
 
 
@@ -59,6 +60,11 @@ urlpatterns = [
     #getting classic test pdf
     path("getting-test-teacherpanel-info/<int:classic_test_id>/",teacher_panel_views.Classic_Test_Utils_Views.as_view()),
     #
+    #getting classic test pdf
+    path("filtering-dtm-test/",dtm_test.GetDTMTestFilterPostRequest.as_view()),
+    #
+
+    
     #main leader bord
     path("main-leaderbord/",user_rating_views.LeaderboardView.as_view()),
     #
@@ -69,6 +75,8 @@ urlpatterns = [
     #getting classic test pdf
     path("getting-test-pdf/<int:classic_test_id>/",json_to_pdf_views.GetClassicTestPDFbyID.as_view()),
     #
+
+    
     #getting submitted classic test 
     path("classic-test/submit",classic_test_result_views.ClassicTestSubmissionAPIView.as_view()),
     #
