@@ -11,6 +11,9 @@ from api.models.ClassicTestDB import *
 from api.models.userDB import User
 import nested_admin
 from api.models.ClasssicTestResultDB import *
+from api.models.dtm_TEST import *
+
+
 
 
 
@@ -19,24 +22,24 @@ admin.site.register(Tariff)
 #
 admin.site.register(DTMTestGroups)
 #DTM TEST registration
+
+
+admin.site.register(DTM_Test_Language)
+admin.site.register(DTM_Subjects)
 class DTMAnswerInline(nested_admin.NestedTabularInline):
-    model = DTMAnswerDB
+    model = Answer
     extra = 1
 
 class DTMQuestionInline(nested_admin.NestedTabularInline):
-    model = DTMQuestionDB
+    model = Question
     inlines = [DTMAnswerInline]
     extra = 1
 
-class DTMSubjectInline(nested_admin.NestedTabularInline):
-    model = DTMSubject
-    inlines = [DTMQuestionInline]
-    extra = 1
 
 class DTMTestAdmin(nested_admin.NestedModelAdmin):
-    inlines = [DTMSubjectInline]
+    inlines = [DTMQuestionInline]
  
-admin.site.register(DTMTestDB,DTMTestAdmin)
+admin.site.register(Test,DTMTestAdmin)
 #
 #Classic TEST registration
 class ClassicAnswerInline(nested_admin.NestedTabularInline):

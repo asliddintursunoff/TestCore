@@ -8,3 +8,4 @@ from .dtm_test_result import *
 from .tariffDB import *
 from .ClassicTestDB import *
 from .ClasssicTestResultDB import *
+from .dtm_TEST import *
