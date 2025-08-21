@@ -21,8 +21,24 @@ from api.views import (dtm_test_result_views,
 from api.views.authentication_views import TelegramOTPStoreAPIView, OTPVerifyJWTAPIView,CustomTokenRefreshView
 
 
+# api/urls.py
+# api/urls.py
+# api/urls.py
+from django.urls import path
+from api.views.dtm_random import (
+    ListSubjectOptions, ListLanguageOptions,
+    CreateDTMRandomBundleByIds, RetrieveDTMRandomBundleFull,
+)
 
 urlpatterns = [
+    path("dtm-tests/subjects/", ListSubjectOptions.as_view(), name="dtm_subject_options"),          # GET
+    path("dtm-tests/languages/", ListLanguageOptions.as_view(), name="dtm_language_options"),       # GET
+    path("dtm-tests/", CreateDTMRandomBundleByIds.as_view(), name="create_dtm_random_by_ids"),      # POST
+    path("dtm-tests/token/<str:token>/", RetrieveDTMRandomBundleFull.as_view(), name="get_dtm_random_full"),  # GET (full Q&A)
+
+
+
+
     #registration
     path('telegram-login/', TelegramOTPStoreAPIView.as_view()),
     path('verify-otp/', OTPVerifyJWTAPIView.as_view()),
@@ -101,11 +117,11 @@ urlpatterns = [
     path("submission-test-detail-result/<int:submitted_test_id>/",international_university_test_result_views.TestSubmittedResultDetailAPIView.as_view()),
     path("ai/<int:test_type_id>/<int:question_id>/",ai_views.AskResultAPIView.as_view(),name="getting_result"),
 
-    #DTM
-    path("dtm-test-groups/",dtm_test_views.DTMTestGroupListAPIView.as_view()),
-    path("dtm-tests/<int:group_id>/",dtm_test_views.DTMTestsListAPIView.as_view(),name= "dtm_tests"),
-    path("dtm-test/<int:id>/",dtm_test_views.DTMTestDetailAPIView.as_view(),name= "dtm_test"),
-    path("dtm-test/create/",dtm_test_views.DTMTestFullCreateAPIView.as_view(),name= "create_dtm_test"),
-    path("dtm-test/submit/",dtm_test_result_views.DTMTestSubmissionAPIView.as_view(),name= "submit_dtm_test"),
-    path("dtm-test/show-result/<int:submitted_dtm_test_id>/",dtm_test_result_views.DTMTestSubmittedResultAPIView.as_view(),name= "submit_dtm_test"),
+    # #DTM
+    # path("dtm-test-groups/",dtm_test_views.DTMTestGroupListAPIView.as_view()),
+    # path("dtm-tests/<int:group_id>/",dtm_test_views.DTMTestsListAPIView.as_view(),name= "dtm_tests"),
+    # path("dtm-test/<int:id>/",dtm_test_views.DTMTestDetailAPIView.as_view(),name= "dtm_test"),
+    # path("dtm-test/create/",dtm_test_views.DTMTestFullCreateAPIView.as_view(),name= "create_dtm_test"),
+    # path("dtm-test/submit/",dtm_test_result_views.DTMTestSubmissionAPIView.as_view(),name= "submit_dtm_test"),
+    # path("dtm-test/show-result/<int:submitted_dtm_test_id>/",dtm_test_result_views.DTMTestSubmittedResultAPIView.as_view(),name= "submit_dtm_test"),
 ]

@@ -26,6 +26,7 @@ admin.site.register(DTMTestGroups)
 
 admin.site.register(DTM_Test_Language)
 admin.site.register(DTM_Subjects)
+
 class DTMAnswerInline(nested_admin.NestedTabularInline):
     model = Answer
     extra = 1
@@ -93,20 +94,20 @@ admin.site.register(TestDB,TestAdmin)
 #
 
 
-#DTM submitted answers Admin View
-class DTMAnswerSubmittedInline(nested_admin.NestedTabularInline):
-    model = DTMAnswerSubmission
-    extra = 1
+# #DTM submitted answers Admin View
+# class DTMAnswerSubmittedInline(nested_admin.NestedTabularInline):
+#     model = DTMAnswerSubmission
+#     extra = 1
 
-class DTMSubjectSubmissionInline(nested_admin.NestedTabularInline):
-    inlines = [DTMAnswerSubmittedInline]
-    model = DTMSubjectsSubmissionDB
-    extra =1
-class DTMTestSubmittedAdmin(nested_admin.NestedModelAdmin):
-    inlines = [DTMSubjectSubmissionInline]
+# class DTMSubjectSubmissionInline(nested_admin.NestedTabularInline):
+#     inlines = [DTMAnswerSubmittedInline]
+#     model = DTMSubjectsSubmissionDB
+#     extra =1
+# class DTMTestSubmittedAdmin(nested_admin.NestedModelAdmin):
+#     inlines = [DTMSubjectSubmissionInline]
 
-admin.site.register(DTMTestSubmission,DTMTestSubmittedAdmin)
-#
+# admin.site.register(DTMTestSubmission,DTMTestSubmittedAdmin)
+# #
 
 admin.site.register(AllTestTypes)
 admin.site.register(TestSubmission)

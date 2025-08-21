@@ -25,7 +25,7 @@ class Test(models.Model):
     language = models.ForeignKey(DTM_Test_Language,on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.id} - {self.subject_name} - {self.test_type}"
+        return f"{self.id} - {self.subject_name} - {self.subject_name.test_type}"
 
 
 class Question(models.Model):
